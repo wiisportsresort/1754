@@ -1,13 +1,18 @@
+@import '~snackbar/src/snackbar.scss';
+
 @import url('https://fonts.googleapis.com/css?family=Concert+One|Lato:400,700');
+
 
 $france: #3498db;
 $britain: #e94858;
 $mohawk: #82bf6e;
 $cherokee: #9568d0;
+$shawnee: #f18836;
 $miami: #d075c3;
 $ojibwe: #fedc30;
 
-* {
+
+*:not(body) {
   box-sizing: border-box;
 }
 
@@ -17,7 +22,7 @@ html {
 
 body {
   margin: 20px auto;
-  padding: 20px;
+  // padding: 20px;
   width: 800px;
   font: 16px "Lato";
 }
@@ -29,8 +34,8 @@ h1 {
   padding: 0px 15px;
 }
 
-.container {
-  .navbar {
+#container {
+  #navbar {
     margin: 20px 0px;
     width: 800px;
     .navbar-button {
@@ -55,7 +60,7 @@ h1 {
       }
     }
   }
-  .window {
+  #window {
     #north-america-svg {
       position: absolute;
       border-radius: 10px;
