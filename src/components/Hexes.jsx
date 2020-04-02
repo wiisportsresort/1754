@@ -1,4 +1,29 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { hexLocations as loc, colors } from '../common';
+
+export class Hexes extends Component {
+  constructor(props) {
+    super(props);
+
+    this.hexComponents = [];
+    this.state = {};
+
+    for (let i = 1; i < loc.length; i++) {
+      let [x, y] = loc[i];
+      this.hexComponents.push(<Hex key={i} number={i} color={colors[this.props.initialOwners[i]]} left={x} top={y} />);
+    }
+  }
+  reassignHex(n, owner) {
+    this.hexComponents[n] = <Hex key={n} number={n} color={colors[owner]} left={loc[n][0]} top={loc[n][1]} />
+  }
+  render() {
+    return <>{this.hexComponents}</>;
+  }
+}
+Hexes.propTypes = {
+  initialOwners: PropTypes.object.isRequired
+}
 
 export class Hex extends Component {
   render() {
@@ -7,7 +32,7 @@ export class Hex extends Component {
         className="hex"
         version="1.1"
         id={`hex${this.props.number}`}
-        style={{ top: this.props.top, left: this.props.left }}
+        style={{ top: this.props.top + 'px', left: this.props.left + 'px' }}
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
         x="0px"
@@ -29,4 +54,10 @@ export class Hex extends Component {
       </svg>
     );
   }
+}
+Hex.propTypes = {
+  number: PropTypes.number.isRequired,
+  top: PropTypes.number.isRequired,
+  left: PropTypes.number.isRequired,
+  color: PropTypes.string.isRequired
 }
