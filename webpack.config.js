@@ -10,7 +10,7 @@ const developmentEnabled = process.env.NODE_ENV === 'development';
 module.exports = {
   mode: developmentEnabled ? 'development' : 'production',
   entry: {
-    main: developmentEnabled ? ['webpack-hot-middleware/client?overlay=true', './src/main.js'] : './src/main.js'
+    main: developmentEnabled ? ['webpack-hot-middleware/client?overlay=true', './src/main.jsx'] : './src/main.jsx'
   },
   output: {
     filename: '[name].js',
