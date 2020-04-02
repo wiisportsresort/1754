@@ -23,7 +23,7 @@ const io = socketio(server);
 
 // game synchronization
 io.on('connection', socket => {
-  socket.send('_authenticate');
+
 });
 
 // icons, assets, etc
@@ -33,6 +33,15 @@ app.use(express.static(path.resolve(__dirname, 'public')));
 app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname + '/views/index.html'));
 });
+
+app.post('/auth/:type', (req, res) => {
+  switch (req.params.type) {
+    case 'edit':
+      break;
+    case 'view':
+      break;
+  }
+})
 
 // webpack compilation (scss, es6 => es5)
 const webpackCompiler = webpack(webpackConfig);
