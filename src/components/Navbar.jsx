@@ -21,8 +21,8 @@ export class Navbar extends Component {
 export class ResetButton extends Component {
   render() {
     return (
-      <button className="navbar-button" id="reset-button">
-        <i className="fas fa-sync-alt"></i>reset
+      <button className="navbar-button" id="navbar-button-reset">
+        <i className="fas fa-sync-alt"></i> reset
       </button>
     );
   }
@@ -30,7 +30,7 @@ export class ResetButton extends Component {
 export class ScoreButton extends Component {
   render() {
     return (
-      <button className="navbar-button" id={`score-button-${this.props.group}`}>
+      <button className="navbar-button score-button" id={`score-button-${this.props.group}`}>
         {capitalize(this.props.group)}: <span id={`score-${this.props.group}`}>{this.props.initialValue}</span>
       </button>
     );
