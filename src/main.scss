@@ -1,16 +1,22 @@
+@import '~normalize.css/normalize.css';
 @import '~snackbar/src/snackbar.scss';
 
 @import url('https://fonts.googleapis.com/css?family=Concert+One|Lato:400,700');
 
+$anim-length: 0.075s;
+$anim-curve: ease-out;
 
-$france: #3498db;
-$britain: #e94858;
-$mohawk: #82bf6e;
-$cherokee: #9568d0;
-$shawnee: #f18836;
-$miami: #d075c3;
-$ojibwe: #fedc30;
+$button-anim: background $anim-curve $anim-length, color $anim-curve $anim-length, border $anim-curve $anim-length;
 
+$colors: (
+  'france': #3498db,
+  'britain': #e94858,
+  'mohawk': #82bf6e,
+  'cherokee': #9568d0,
+  'shawnee': #f18836,
+  'miami': #d075c3,
+  'ojibwe': #fedc30,
+);
 
 *:not(body) {
   box-sizing: border-box;
@@ -24,33 +30,74 @@ body {
   margin: 20px auto;
   // padding: 20px;
   width: 800px;
-  font: 16px "Lato";
+  font: 16px 'Lato';
 }
 
-h1 {
-  color: #eee8aa;
-  font-family: 'ConcertOne-Regular', 'Concert One';
-  font-size: 3em;
-  padding: 0px 15px;
+#header {
+  display: flex;
+  height: 48px;
+  font-family: 'Concert One';
+  align-items: center;
+
+  #header-title {
+    padding: 0;
+    margin: 0;
+    color: #eee8aa;
+    font-size: 3em;
+    display: inline;
+  }
+
+  #header-button-login {
+    font: 1em 'Concert One';
+    background: #ddd;
+    color: #333;
+    padding: 9px 11px;
+    border-radius: 5px;
+    border: 2px solid transparent;
+    transition: $button-anim;
+    &:hover {
+      background: #333;
+      color: #ddd;
+      border: 2px solid #ddd;
+    }
+  }
+}
+
+.spacer {
+  flex-grow: 1;
 }
 
 #container {
   #navbar {
-    margin: 20px 0px;
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0 20px;
     width: 800px;
+
     .navbar-button {
-      color: #333;
-      font-family: ConcertOne-Regular, Concert One;
+      font-family: 'Concert One';
       font-size: 1em;
-      padding: 9px;
+      padding: 9px 11px;
       border-radius: 5px;
       border: 2px solid transparent;
-
+      transition: $button-anim;
       &:hover {
         border: 2px solid #333;
       }
     }
-    #reset-button {
+
+    @each $group, $color in $colors {
+      #score-button-#{$group} {
+        background: $color;
+        &:hover {
+          background: #333;
+          color: $color;
+          border: 2px solid $color;
+        }
+      }
+    }
+
+    #navbar-button-reset {
       background: #333;
       color: #ddd;
       &:hover {
@@ -61,50 +108,38 @@ h1 {
     }
   }
   #window {
-    #north-america-svg {
-      position: absolute;
-      border-radius: 10px;
-    }
     position: relative;
     height: 600px;
     width: 800px;
     margin: 0;
     border-radius: 10px;
     background-color: #3f5666;
+    #north-america-svg {
+      position: absolute;
+      border-radius: 10px;
+    }
+    .hex {
+      cursor: pointer;
+      width: 75px;
+      position: absolute;
+      // clip-path: polygon(4% 48.9%, 26.67% 95.65%, 74.67% 95.66%, 97.33% 50.21%, 73.34% 3.93%, 28% 3.94%);
+      clip-path: polygon(0% 48.9%, 25.33% 99.58%, 76.01% 99.59%, 101.33% 48.9%, 73.34% 0%, 26.67% 0.01%);
+      .hex-stroke {
+        stroke: white;
+        stroke-width: 2px;
+        transition: fill $anim-curve $anim-length;
+      }
+      .hex-text {
+        font-family: 'Concert One';
+        font-size: 30px;
+        text-anchor: middle;
+      }
+      &:hover .hex-text {
+        fill: white;
+        transition: fill $anim-curve $anim-length;
+      }
+    }
   }
 }
 
-.hex-stroke {
-  stroke: white;
-  stroke-width: 2px;
-}
 
-.hex-text {
-  font-family: 'Concert One';
-  font-size: 30px;
-  text-anchor: middle;
-  pointer-events: auto;
-}
-svg {
-  pointer-events: none;
-}
-
-.hex {
-  width: 75px;
-  // display: inline;
-  position: absolute;
-}
-
-.error {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 9001;
-  background-color: #a82a2a;
-  text-align: center;
-  padding: 32px;
-  font: 18px "Lato";
-  color: white;
-}
