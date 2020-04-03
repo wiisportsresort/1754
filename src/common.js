@@ -35,7 +35,7 @@ export const hexLocations = [
   [282, 240] // 32
 ];
 
-/** CSS compatible colors for each group. */
+/** CSS-formatted colors for each group. */
 export const colors = {
   france: '#3498db',
   britain: '#e94858',
