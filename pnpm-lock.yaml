@@ -2,7 +2,7 @@ dependencies:
   dotenv: 8.2.0
   express: 4.17.1
   jquery: 3.4.1
-  notistack: 0.9.9_react-dom@16.13.1+react@16.13.1
+  normalize.css: 8.0.1
   react: 16.13.1
   react-dom: 16.13.1_react@16.13.1
   snackbar: 1.1.0
@@ -2028,10 +2028,6 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-qOhPa/Fj7s6TY8H8esGu5QNpMMQxz79h+urzrNYN6mn+9BnxlDGf5QZ+XeCDsxSjPqsSR56XOZOJmpeurnLMeg==
-  /classnames/2.2.6:
-    dev: false
-    resolution:
-      integrity: sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
   /cli-boxes/1.0.0:
     dev: true
     engines:
@@ -3732,12 +3728,6 @@ packages:
     dev: true
     resolution:
       integrity: sha1-0nRXAQJabHdabFRXk+1QL8DGSaE=
-  /hoist-non-react-statics/3.3.2:
-    dependencies:
-      react-is: 16.13.1
-    dev: false
-    resolution:
-      integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
   /homedir-polyfill/1.0.3:
     dependencies:
       parse-passwd: 1.0.0
@@ -5084,21 +5074,10 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-LMDWazHqIwNkWENuNiDYWVTGbDw=
-  /notistack/0.9.9_react-dom@16.13.1+react@16.13.1:
-    dependencies:
-      classnames: 2.2.6
-      hoist-non-react-statics: 3.3.2
-      prop-types: 15.7.2
-      react: 16.13.1
-      react-dom: 16.13.1_react@16.13.1
-      react-is: 16.13.1
+  /normalize.css/8.0.1:
     dev: false
-    peerDependencies:
-      '@material-ui/core': ^3.2.0 || ^4.0.0
-      react: ^16.8.0
-      react-dom: ^16.8.0
     resolution:
-      integrity: sha512-C783KedXtgCWfd/wD4qzKEF4bP/sVF9cAveVpWAFhzypYo0q6l3xLcaLVtUnOBUXZY7KWfvg+lv4XSOiofXeTA==
+      integrity: sha512-qizSNPO93t1YUuUhP22btGOo3chcvDFqFaj2TRybP0DMxkHOCTYwp3n34fel4a31ORXy4m1Xq0Gyqpb5m33qIg==
   /npm-run-path/2.0.2:
     dependencies:
       path-key: 2.0.1
@@ -7942,7 +7921,7 @@ specifiers:
   mini-css-extract-plugin: ^0.9.0
   node-sass: ^4.13.1
   nodemon: ^2.0.2
-  notistack: ^0.9.9
+  normalize.css: ^8.0.1
   postcss-loader: ^3.0.0
   prop-types: ^15.7.2
   react: ^16.13.1
