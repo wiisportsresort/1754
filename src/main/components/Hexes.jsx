@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { hexLocations as loc, colors } from '../common';
+import { hexLocations as loc, colors } from '../../common/hexData';
 
 /** 
  * Captializes the first letter in the string. 
@@ -26,7 +26,7 @@ export class Hexes extends Component {
     });
 
     console.log(`Hex ${n} was assigned to ${captialize(owner)}`)
-  }
+  } 
   componentDidMount() {
     [].map.call(document.querySelectorAll('.hex'), el => {
       el.addEventListener('click', _event => {
