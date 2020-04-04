@@ -22,26 +22,28 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 // game synchronization
-io.on('connection', socket => {
-
+io.on('connection', (socket) => {
+  socket.emit('_identify')
 });
 
 // icons, assets, etc
 app.use(express.static(path.resolve(__dirname, 'public')));
 
 // routes
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname + '/views/index.html'));
-});
 
-app.post('/auth/:type', (req, res) => {
+const route = (file) => (_req, res) => res.sendFile(path.resolve(__dirname + '/' + file));
+
+app.get('/', route('views/index.html'));
+app.get('/login', route('views/login.html'));
+
+app.post('/api/authenticate/:type/:token', (req, res) => {
   switch (req.params.type) {
     case 'edit':
       break;
     case 'view':
       break;
   }
-})
+});
 
 // webpack compilation (scss, es6 => es5)
 const webpackCompiler = webpack(webpackConfig);
@@ -52,19 +54,29 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   // webpack middleware (build on update, live reload); development only
   const webpackDevMiddleware = require('webpack-dev-middleware');
-  const webpackHotMiddleware = require('webpack-hot-middleware');
+
+  // - webpack HMR only 
+  // const webpackHotMiddleware = require('webpack-hot-middleware');
   app.use(
     webpackDevMiddleware(webpackCompiler, {
       stats: {
         children: false,
-        colors: true
-      }
+        colors: true,
+      },
+      watchOptions: {
+        aggregateTimeout: 300,
+        poll: true,
+      },
     })
   );
-  app.use(webpackHotMiddleware(webpackCompiler, {
-    log: console.log,
-    reload: true
-  }));
+
+  // - webpack HMR only 
+  // app.use(
+  //   webpackHotMiddleware(webpackCompiler, {
+  //     log: console.log,
+  //     reload: true,
+  //   })
+  // );
 }
 
 // open server
