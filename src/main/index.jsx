@@ -1,10 +1,10 @@
+import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import snackbar from 'snackbar';
-import { Hexes } from './components/Hexes.jsx';
-import { Navbar } from './components/Navbar.jsx';
-import { colors } from './common';
-import './main.scss'; 
+import { Hexes } from './components/Hexes';
+import { Navbar } from './components/Navbar';
+import './index.scss';
 
 // socket.io client side
 /* global io */ 
@@ -61,18 +61,24 @@ function init(_event) {
 
   drawHexes();
   ReactDOM.render(<Navbar />, document.querySelector('#navbar'));
+
+  console.log('init() finished')
 }
 
 function reset() {}
 
-window.addEventListener('DOMContentLoaded', init);
-window.addEventListener('load', () => (document.body.style.visibility = 'visible')); 
+window.addEventListener('DOMContentLoaded', init); 
+window.addEventListener('load', () => (document.body.style.visibility = 'visible'));
 
-console.log('hi');
+$('#header-button-login').click(() => {
+  window.location.href = './login';
+})
+
 
 // webpack hot module replacement
 if (module.hot) { 
-  module.hot.accept(window.location.reload.bind(window.location));
+  module.hot.accept();
+  // module.hot.accept(window.location.reload.bind(window.location));
   // window.location.reload();
-  module.hot.dispose(window.location.reload.bind(window.location));
+  // module.hot.dispose(window.location.reload.bind(window.location));
 }
