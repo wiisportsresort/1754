@@ -1,0 +1,4 @@
+$anim-length: 0.075s;
+$anim-curve: ease-out;
+
+$button-anim: background $anim-curve $anim-length, color $anim-curve $anim-length, border $anim-curve $anim-length;

@@ -1,0 +1,32 @@
+// @import './vars.scss';
+
+#header {
+  display: flex;
+  height: 48px;
+  font-family: 'Concert One';
+  align-items: center;
+
+  #header-title {
+    padding: 0;
+    margin: 0;
+    color: #eee8aa;
+    font-size: 3em;
+    display: inline;
+  }
+
+  #header-button-login {
+    font: 1em 'Concert One';
+    background: #ddd;
+    color: #333;
+    padding: 9px 11px;
+    border-radius: 5px;
+    border: 2px solid transparent;
+    transition: $button-anim;
+    &:hover {
+      background: #333;
+      color: #ddd;
+      border: 2px solid #ddd;
+    }
+    cursor: pointer;
+  }
+}

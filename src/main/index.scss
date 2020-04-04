@@ -3,10 +3,8 @@
 
 @import url('https://fonts.googleapis.com/css?family=Concert+One|Lato:400,700');
 
-$anim-length: 0.075s;
-$anim-curve: ease-out;
-
-$button-anim: background $anim-curve $anim-length, color $anim-curve $anim-length, border $anim-curve $anim-length;
+@import '../common/vars.scss';
+@import '../common/header.scss';
 
 $colors: (
   'france': #3498db,
@@ -33,35 +31,7 @@ body {
   font: 16px 'Lato';
 }
 
-#header {
-  display: flex;
-  height: 48px;
-  font-family: 'Concert One';
-  align-items: center;
 
-  #header-title {
-    padding: 0;
-    margin: 0;
-    color: #eee8aa;
-    font-size: 3em;
-    display: inline;
-  }
-
-  #header-button-login {
-    font: 1em 'Concert One';
-    background: #ddd;
-    color: #333;
-    padding: 9px 11px;
-    border-radius: 5px;
-    border: 2px solid transparent;
-    transition: $button-anim;
-    &:hover {
-      background: #333;
-      color: #ddd;
-      border: 2px solid #ddd;
-    }
-  }
-}
 
 .spacer {
   flex-grow: 1;
@@ -84,6 +54,7 @@ body {
       &:hover {
         border: 2px solid #333;
       }
+      cursor: pointer;
     }
 
     @each $group, $color in $colors {
@@ -117,13 +88,15 @@ body {
     #north-america-svg {
       position: absolute;
       border-radius: 10px;
+      clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);
     }
     .hex {
       cursor: pointer;
       width: 75px;
       position: absolute;
       // clip-path: polygon(4% 48.9%, 26.67% 95.65%, 74.67% 95.66%, 97.33% 50.21%, 73.34% 3.93%, 28% 3.94%);
-      clip-path: polygon(0% 48.9%, 25.33% 99.58%, 76.01% 99.59%, 101.33% 48.9%, 73.34% 0%, 26.67% 0.01%);
+      // clip-path: polygon(0% 48.9%, 25.33% 99.58%, 76.01% 99.59%, 101.33% 48.9%, 73.34% 0%, 26.67% 0.01%);
+      clip-path: polygon(-1.33% 48.9%, 25.33% 99.58%, 77.35% 100.90%, 101.33% 48.9%, 78.67% 0%, 21.34% 0.01%);
       .hex-stroke {
         stroke: white;
         stroke-width: 2px;
