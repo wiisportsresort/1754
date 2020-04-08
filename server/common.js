@@ -1,7 +1,10 @@
 const { promisify } = require('util');
 const ch = require('chalk');
 
+const developmentEnabled = process.env.NODE_ENV === 'development';
+
 module.exports = {
+  developmentEnabled,
   /**
    * Promisify all the provided functions.
    * @requires `promisify` from module `'util'`

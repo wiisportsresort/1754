@@ -7,10 +7,10 @@ const http = require('http'); // require('https');
 const webpack = require('webpack');
 const path = require('path');
 const createRoutes = require('./routes');
-const { webpackConfig, developmentEnabled } = require('../webpack.config.js');
+const webpackConfig = require('../webpack.config.js');
 const games = require('./game');
 const auth = require('./auth');
-const { logServe, logBuild } = require('./common');
+const { logServe, logBuild, developmentEnabled } = require('./common');
 require('dotenv').config();
 
 /**

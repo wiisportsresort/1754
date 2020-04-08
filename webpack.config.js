@@ -4,9 +4,8 @@ const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const TerserPlugin = require('terser-webpack-plugin');
+const { developmentEnabled } = require('./server/common');
 require('dotenv').config();
-
-const developmentEnabled = process.env.NODE_ENV === 'development';
 
 const envPlugins = developmentEnabled
   ? [
@@ -31,7 +30,8 @@ const envOptimization = developmentEnabled
         }),
       ],
     };
-const webpackConfig = {
+    
+module.exports = {
   mode: developmentEnabled ? 'development' : 'production',
   entry: {
     main: './src/main',
@@ -141,6 +141,3 @@ const webpackConfig = {
     ],
   },
 };
-
-module.exports = { webpackConfig, developmentEnabled };
-// module.exports = webpackConfig;
