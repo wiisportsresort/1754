@@ -1,4 +1,4 @@
-/** X/Y for each hex in one-based index format. */
+/** X/Y from top/left (in px) for each hex in one-based index format. */
 export const hexLocations = [
   [], // empty here because of zero-indexing
   [600, 100], // 1

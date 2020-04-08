@@ -8,9 +8,6 @@ import { EventPipe } from '../common/event';
 import { defaultOwners } from '../common/hexData';
 import './index.scss';
 
-// socket.io client side
-/* global io */ 
-const socket = io();
 /** A representation of a country/tribe. */
 class Group {
   /**
@@ -71,33 +68,17 @@ class BoardManager extends EventPipe {
 const game = new BoardManager();
 
 function init(_event) {
-  if (window.innerWidth < 800) {
+  if (window.innerWidth < 800)
     snackbar.show('Your screen may be too small to properly display this website. Consider using a screen greater than 800px in width.');
-    // $('#container').css('display', 'none');
-    // $('body').css('width', '0');
-    // ReactDOM.render(<ScreenTooSmall />, document.querySelector('#error'));
-    // return;
-  }
 
   game.drawHexes('#hexes').drawNavbar('#navbar');
 
-  console.log('init() finished')
+  console.log('init() finished');
 }
 
 function reset() {}
 
-window.addEventListener('DOMContentLoaded', init); 
+window.addEventListener('DOMContentLoaded', init);
 window.addEventListener('load', () => (document.body.style.visibility = 'visible'));
 
-$('#header-button-login').click(() => {
-  window.location.href = './login';
-})
-
-
-// webpack hot module replacement
-if (module.hot) { 
-  module.hot.accept();
-  // module.hot.accept(window.location.reload.bind(window.location));
-  // window.location.reload();
-  // module.hot.dispose(window.location.reload.bind(window.location));
-}
+$('.header-button--login').click(() => (window.location.href = './login'));
