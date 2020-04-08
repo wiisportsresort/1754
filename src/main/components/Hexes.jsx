@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { hexLocations as loc, colors } from '../../common/hexData';
-
-/** 
- * Captializes the first letter in the string. 
- * Does not capitalize every word in the string.
- * @param {string} string - string to captialize.
- */
-const captialize = string => string.charAt(0).toUpperCase() + string.slice(1);
+import { capitalize } from '../../common/util';
 
 export class Hexes extends Component {
   constructor(props) {

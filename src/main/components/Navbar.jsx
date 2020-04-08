@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 const capitalize = string => string[0].toUpperCase() + string.slice(1);
+import { capitalize } from '../../common/util';
 
 export class Navbar extends Component {
   render() {
