@@ -1,4 +1,26 @@
+@charset 'UTF-8';
+
+@import url('https://fonts.googleapis.com/css?family=Concert+One|Lato:400,700');
+
 $anim-length: 0.075s;
 $anim-curve: ease-out;
 
 $button-anim: background $anim-curve $anim-length, color $anim-curve $anim-length, border $anim-curve $anim-length;
+
+$colors: (
+  'france': #3498db,
+  'britain': #e94858,
+  'mohawk': #82bf6e,
+  'cherokee': #9568d0,
+  'shawnee': #f18836,
+  'miami': #d075c3,
+  'ojibwe': #fedc30,
+);
+
+.spacer {
+  flex-grow: 1;
+}
+
+button {
+  cursor: pointer;
+}
