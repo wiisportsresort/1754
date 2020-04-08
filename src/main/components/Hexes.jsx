@@ -12,8 +12,17 @@ export class Hexes extends Component {
     };
   }
   assign(n, owner) {
-    // this.hexComponents[n] = null;
-    // this.hexComponents[n] = <Hex key={n} number={n} color={colors[owner]} left={loc[n][0]} top={loc[n][1]} />
+    const hexUpdate = new CustomEvent('hexupdate', {
+      detail: {
+        hex: n,
+        oldOwner: this.state.owners[n],
+        newOwner: owner,
+      },
+    });
+    this.props.eventPipe.dispatch(hexUpdate);
+
+    console.log(`Hex ${n} was assigned to ${capitalize(owner)}`);
+
     this.setState((state, _props) => {
       state.owners[n] = owner;
       return state;
