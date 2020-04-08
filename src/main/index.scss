@@ -1,20 +1,8 @@
-@import '~normalize.css/normalize.css';
-@import '~snackbar/src/snackbar.scss';
-
-@import url('https://fonts.googleapis.com/css?family=Concert+One|Lato:400,700');
-
 @import '../common/vars.scss';
 @import '../common/header.scss';
+@import '../common/contextmenu.scss';
 
-$colors: (
-  'france': #3498db,
-  'britain': #e94858,
-  'mohawk': #82bf6e,
-  'cherokee': #9568d0,
-  'shawnee': #f18836,
-  'miami': #d075c3,
-  'ojibwe': #fedc30,
-);
+@import '~snackbar/src/snackbar.scss';
 
 *:not(body) {
   box-sizing: border-box;
@@ -31,8 +19,6 @@ body {
   font: 16px 'Lato';
 }
 
-
-
 .spacer {
   flex-grow: 1;
 }
@@ -47,7 +33,7 @@ body {
     .navbar-button {
       font-family: 'Concert One';
       font-size: 1em;
-      padding: 9px 11px;
+      padding: 5px 11px 9px;
       border-radius: 5px;
       border: 2px solid transparent;
       transition: $button-anim;
@@ -96,7 +82,8 @@ body {
       position: absolute;
       // clip-path: polygon(4% 48.9%, 26.67% 95.65%, 74.67% 95.66%, 97.33% 50.21%, 73.34% 3.93%, 28% 3.94%);
       // clip-path: polygon(0% 48.9%, 25.33% 99.58%, 76.01% 99.59%, 101.33% 48.9%, 73.34% 0%, 26.67% 0.01%);
-      clip-path: polygon(-1.33% 48.9%, 25.33% 99.58%, 77.35% 100.90%, 101.33% 48.9%, 78.67% 0%, 21.34% 0.01%);
+      clip-path: polygon(-5% 50%, 25% 105%, 77% 105%, 105% 50%, 80% -5%, 25% -5%);
+      // clip-path: polygon(-1.33% 48.9%, 25.33% 99.58%, 77.35% 100.90%, 101.33% 48.9%, 78.67% 0%, 21.34% 0.01%);
       .hex-stroke {
         stroke: white;
         stroke-width: 2px;
