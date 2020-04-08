@@ -4,14 +4,13 @@ import ReactDOM from 'react-dom';
 import snackbar from 'snackbar';
 import { Hexes } from './components/Hexes';
 import { Navbar } from './components/Navbar';
+import { EventPipe } from '../common/event';
+import { defaultOwners } from '../common/hexData';
 import './index.scss';
 
 // socket.io client side
 /* global io */ 
 const socket = io();
-
-/** initial owners only, update `hexes.assign(n, owner)` instead */
-const initialHexOwners = {};
 /** A representation of a country/tribe. */
 class Group {
   /**
@@ -23,32 +22,53 @@ class Group {
   }
 }
 
-class GroupManager {
+class BoardManager extends EventPipe {
+  /**
+   * Create a new board, with the hexes, navbar, and event handler.
+   * @param {Object.<string, (Array<number>|Group)>} groups groups with their initial owned hexes; can be either an object with arrays of numbers or the instances of `Group`, arrays will be converted to instances if provided.
+   */
   constructor(groups) {
-    for (const [name, group] of Object.entries(groups)) {
-      for (const hex of group.initialHexes) {
-        initialHexOwners[hex] = name;
+    super();
+
+    // set default groups if not provided, change into group instances
+    groups = groups || defaultOwners;
+    if (Array.isArray(groups[Object.keys(groups)[0]])) {
+      for (const [name, array] of Object.entries(groups)) {
+        groups[name] = new Group(...array);
       }
     }
+    
+
+    /** initial owners only, update eventPipe instead */
+    this.initialHexOwners = {};
+    this.initialOwnedHexes = {};
+
+    for (const [name, group] of Object.entries(groups)) {
+      this.initialOwnedHexes[name] = group.initialHexes;
+      for (const hex of group.initialHexes) {
+        this.initialHexOwners[hex] = name;
+      }
+    }
+
+    this.hexes = <Hexes initialOwners={this.initialHexOwners} eventPipe={this} />;
+    this.navbar = <Navbar initialOwnedHexes={this.initialOwnedHexes} eventPipe={this} />;
+
+    this.on('reset', reset);
+    return this;
+  }
+  /** Draw all 32 hexes into the provided element. */
+  drawHexes(selector) {
+    ReactDOM.render(this.hexes, document.querySelector(selector));
+    return this;
+  }
+  /** Draw the button navbar into the provided element. */
+  drawNavbar(selector) {
+    ReactDOM.render(this.navbar, document.querySelector(selector));
+    return this;
   }
 }
 
-const groups = new GroupManager({
-  france: new Group(1, 4, 13, 14, 15, 16, 25),
-  britain: new Group(2, 3, 5, 6, 7, 8, 9),
-  mohawk: new Group(11, 12, 17, 18),
-  cherokee: new Group(10, 19, 20),
-  shawnee: new Group(21, 22, 29, 30),
-  miami: new Group(23, 24, 28, 31),
-  ojibwe: new Group(26, 27, 32)
-});
-
-const hexes = <Hexes initialOwners={initialHexOwners} />;
-
-/** Draw all 32 hexes in the color set in `hexOwners`. */
-function drawHexes() {
-  ReactDOM.render(hexes, document.querySelector('#hexes'));
-}
+const game = new BoardManager();
 
 function init(_event) {
   if (window.innerWidth < 800) {
@@ -59,8 +79,7 @@ function init(_event) {
     // return;
   }
 
-  drawHexes();
-  ReactDOM.render(<Navbar />, document.querySelector('#navbar'));
+  game.drawHexes('#hexes').drawNavbar('#navbar');
 
   console.log('init() finished')
 }

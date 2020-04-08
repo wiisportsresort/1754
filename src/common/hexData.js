@@ -45,3 +45,13 @@ export const colors = {
   miami: '#d075c3',
   ojibwe: '#fedc30'
 };
+
+export const defaultOwners = {
+  france: [1, 4, 13, 14, 15, 16, 25],
+  britain: [2, 3, 5, 6, 7, 8, 9],
+  mohawk: [11, 12, 17, 18],
+  cherokee: [10, 19, 20],
+  shawnee: [21, 22, 29, 30],
+  miami: [23, 24, 28, 31],
+  ojibwe: [26, 27, 32],
+}
