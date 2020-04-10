@@ -1,7 +1,8 @@
-const crypto = require('crypto');
-const fse = require('fs-extra');
-const path = require('path');
-const { promisify } = require('util');
+import crypto from 'crypto';
+import fse from 'fs-extra';
+import path from 'path';
+import { promisify } from 'util';
+
 const SALT_LENGTH = 64,
   KEY_LENGTH = 64,
   ITERATIONS = 200000,

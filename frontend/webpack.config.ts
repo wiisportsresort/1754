@@ -1,13 +1,16 @@
-const path = require('path');
-const autoprefixer = require('autoprefixer');
-const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const TerserPlugin = require('terser-webpack-plugin');
-const { developmentEnabled } = require('./server/common');
-require('dotenv').config();
+import path from 'path';
+import autoprefixer from 'autoprefixer';
+import MiniCSSExtractPlugin from 'mini-css-extract-plugin';
+import * as webpack from 'webpack';
+import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import TerserPlugin from 'terser-webpack-plugin';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-const envPlugins = developmentEnabled
+const devMode = process.env.NODE_ENV === 'development';
+
+const envPlugins = devMode
   ? [
       new BundleAnalyzerPlugin({
         openAnalyzer: false,
@@ -15,7 +18,7 @@ const envPlugins = developmentEnabled
     ]
   : [new OptimizeCSSAssetsPlugin()];
 
-const envOptimization = developmentEnabled
+const envOptimization = devMode
   ? {
       minimize: false,
       minimizer: undefined,
@@ -30,9 +33,9 @@ const envOptimization = developmentEnabled
         }),
       ],
     };
-    
-module.exports = {
-  mode: developmentEnabled ? 'development' : 'production',
+
+export default <webpack.Configuration>{
+  mode: devMode ? 'development' : 'production',
   entry: {
     main: './src/main',
     login: './src/login',
@@ -51,7 +54,7 @@ module.exports = {
       children: false,
     },
   },
-  devtool: developmentEnabled ? 'inline-source-map' : 'source-map',
+  devtool: devMode ? 'inline-source-map' : 'source-map',
   watchOptions: {
     ignored: ['public/**', 'node_modules/**'],
     aggregateTimeout: 0,
@@ -128,10 +131,14 @@ module.exports = {
       },
       {
         test: /\.js(x?)$/,
+        enforce: 'pre',
+        loader: 'source-map-loader',
+      },
+      {
+        test: /\.ts(x?)/,
         use: [
-          'source-map-loader',
           {
-            loader: 'babel-loader',
+            loader: 'ts-loader',
             options: {
               presets: ['@babel/preset-env', '@babel/preset-react'],
             },
