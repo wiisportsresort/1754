@@ -5,11 +5,12 @@ const file = (file: string) => (_req: express.Request, res: express.Response) =>
 
 export default function (app: express.Express) {
   // icons, assets, etc
-  app.use(express.static(resolve('public')));
+  app.use(express.static(resolve('frontend/public')));
+  app.use(express.static(resolve('frontend/dist')));
 
   // app pages
-  app.get('/', file('views/index.html'));
-  app.get('/login', file('views/login.html'));
+  app.get('/', file('frontend/views/index.html'));
+  app.get('/login', file('frontend/views/login.html'));
 
   // API
   app.post('/api/auth/login', (req, res) => {});
