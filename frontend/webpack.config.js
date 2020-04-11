@@ -1,14 +1,16 @@
-import path from 'path';
-import autoprefixer from 'autoprefixer';
-import MiniCSSExtractPlugin from 'mini-css-extract-plugin';
-import * as webpack from 'webpack';
-import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import TerserPlugin from 'terser-webpack-plugin';
-import * as dotenv from 'dotenv';
-dotenv.config();
+const path = require('path');
+const autoprefixer = require('autoprefixer');
+const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const TerserPlugin = require('terser-webpack-plugin');
+
+require('dotenv').config();
 
 const devMode = process.env.NODE_ENV === 'development';
+
+console.log(`Mode: ${devMode ? 'development' : 'production'}`);
 
 const envPlugins = devMode
   ? [
@@ -34,29 +36,28 @@ const envOptimization = devMode
       ],
     };
 
-export default <webpack.Configuration>{
+/** @type {webpack.Configuration} */
+module.exports = {
   mode: devMode ? 'development' : 'production',
   entry: {
-    main: './src/main',
-    login: './src/login',
+    main: './frontend/src/main',
+    login: './frontend/src/login',
   },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.ts', '.tsx', '.js'],
   },
-  context: __dirname,
-  devServer: {
-    stats: {
-      colors: true,
-      children: false,
-    },
+  stats: {
+    children: false,
+    source: false,
+    colors: true,
   },
   devtool: devMode ? 'inline-source-map' : 'source-map',
   watchOptions: {
-    ignored: ['public/**', 'node_modules/**'],
+    ignored: ['../public/**', '../node_modules/**'],
     aggregateTimeout: 0,
   },
   plugins: [
@@ -78,27 +79,21 @@ export default <webpack.Configuration>{
       maxInitialRequests: 4,
       automaticNameDelimiter: '~',
       cacheGroups: {
-        'vendor_react-dom': {
-          test: /[\\/]node_modules[\\/]react-dom[\\/]/,
-          name: 'vendor_react-dom',
-          chunks: 'all',
-          priority: 5,
-        },
         vendor_react: {
-          test: /[\\/]node_modules[\\/]react[\\/]/,
-          name: 'vendor_react',
+          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+          name: 'vendor-react',
           chunks: 'all',
           priority: 5,
         },
         vendor_jquery: {
           test: /[\\/]node_modules[\\/]jquery[\\/]/,
-          name: 'vendor_jquery',
+          name: 'vendor-jquery',
           chunks: 'all',
           priority: 5,
         },
         vendor_other: {
           test: /[\\/]node_modules[\\/](?!react|react-dom|jquery).*[\\/]/,
-          name: 'vendor_other',
+          name: 'vendor-other',
           chunks: 'all',
         },
         default: {
@@ -136,14 +131,7 @@ export default <webpack.Configuration>{
       },
       {
         test: /\.ts(x?)/,
-        use: [
-          {
-            loader: 'ts-loader',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react'],
-            },
-          },
-        ],
+        loader: 'ts-loader',
       },
     ],
   },

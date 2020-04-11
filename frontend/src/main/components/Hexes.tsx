@@ -6,38 +6,44 @@ import { EventPipe } from '../../common/event';
 import { colors, hexLocations as loc } from '../../common/hexData';
 import { capitalize } from '../../common/util';
 
-export class Hexes extends Component {
-  constructor(props) {
+interface HexesProps {
+  initialOwners;
+  eventPipe;
+}
+
+export class Hexes extends Component<HexesProps, {}> {
+  render() {
+    const hexComponents: Array<JSX.Element> = [];
+    for (let i = 1; i < loc.length; i++) {
+      let [x, y] = loc[i];
+      hexComponents.push(
+        <HexContextWrapper key={i} eventPipe={this.props.eventPipe} number={i} left={x} top={y} initialOwner={this.props.initialOwners[i]}/>
+      );
+    }
+    return <>{hexComponents}</>;
+  }
+}
+
+
+interface HexContextWrapperProps {
+  eventPipe: EventPipe;
+  initialOwner: string;
+  number: number;
+  top: number;
+  left: number;
+}
+
+class HexContextWrapper extends Component<HexContextWrapperProps, { owner: string }> {
+  constructor(props: Readonly<HexContextWrapperProps>) {
     super(props);
 
     this.state = {
-      owners: this.props.initialOwners,
-    };
+      owner: this.props.initialOwner
+    }
   }
-  clickHandler(event, detail) {
-    if (detail.reset) this.props.eventPipe.dispatch('reset');
-    this.assign(detail.hex, detail.group);
-  }
-  assign(n, owner) {
-    const hexUpdate = new CustomEvent('hexupdate', {
-      detail: {
-        hex: n,
-        oldOwner: this.state.owners[n],
-        newOwner: owner,
-      },
-    });
-    this.props.eventPipe.dispatch(hexUpdate);
-
-    console.log(`Hex ${n} was assigned to ${capitalize(owner)}`);
-
-    this.setState((state, _props) => {
-      state.owners[n] = owner;
-      return state;
-    });
-  }
-  makeContextMenuItems(hex) {
+  makeContextMenuItems(hex: number) {
     let counter = 0;
-    const menuItems = [];
+    const menuItems: Array<JSX.Element> = [];
     menuItems.push(
       <span key={counter++} className="react-contextmenu-item no-hover">
         Hex {hex}
@@ -68,12 +74,20 @@ export class Hexes extends Component {
     }
     menuItems.push(
       <MenuItem key={counter++} divider />,
-      <MenuItem key={counter++} data={{ reset: true }} onclick={this.clickHandler.bind(this)}>
+      <MenuItem key={counter++} data={{ reset: true }} onClick={this.clickHandler.bind(this)}>
         Reset
       </MenuItem>
     );
     return menuItems;
   }
+
+  clickHandler(event, detail) {
+    if (detail.reset) this.props.eventPipe.dispatch('reset');
+    this.setState({
+      owner: detail.group
+    })
+  }
+
   onShowContextMenu() {
     $('#modal')
       .css({
@@ -98,33 +112,30 @@ export class Hexes extends Component {
   }
 
   render() {
-    const hexComponents = [];
-    for (let i = 1; i < loc.length; i++) {
-      let [x, y] = loc[i];
-      hexComponents.push(
-        <React.Fragment key={i}>
-          <ContextMenuTrigger holdToDisplay={1} id={`hex${i}-context-menu`}>
-            <Hex number={i} color={colors[this.state.owners[i]]} left={x} top={y} />
-          </ContextMenuTrigger>
-          <ContextMenu onShow={this.onShowContextMenu} onHide={this.onHideContextMenu} id={`hex${i}-context-menu`}>
-            {this.makeContextMenuItems(i)}
-          </ContextMenu>
-        </React.Fragment>
-      );
-    }
-    return <>{hexComponents}</>;
+    return (
+      <>
+        <ContextMenuTrigger holdToDisplay={1} id={`hex${this.props.number}-context-menu`}>
+          <Hex number={this.props.number} owner={this.state.owner} left={this.props.left} top={this.props.top} />
+        </ContextMenuTrigger>
+        <ContextMenu onShow={this.onShowContextMenu} onHide={this.onHideContextMenu} id={`hex${this.props.number}-context-menu`}>
+          {this.makeContextMenuItems(this.props.number)}
+        </ContextMenu>
+      </>
+    );
   }
 }
-Hexes.propTypes = {
-  initialOwners: PropTypes.object.isRequired,
-  eventPipe: PropTypes.instanceOf(EventPipe).isRequired,
-};
 
-export class Hex extends Component {
+interface HexProps {
+  number: number;
+  top: number;
+  left: number;
+  owner: string;
+}
+
+class Hex extends Component<HexProps, {}> {
   render() {
     return (
       <svg
-        unselectable="on"
         onSelect={() => false}
         onMouseDown={() => false}
         version="1.1"
@@ -143,14 +154,13 @@ export class Hex extends Component {
           WebkitUserSelect: 'none',
           msUserSelect: 'none',
           userSelect: 'none',
-          OUserSelect: 'none',
         }}
       >
         <title>Hex {this.props.number}</title>
         <path
           className="hex-stroke"
           style={{
-            fill: this.props.color,
+            fill: colors[this.props.owner],
           }}
           id={`hex${this.props.number}fill`}
           d="M14.6,51.2l-10-20c-0.7-1.4-0.7-3.1,0-4.5l10-20C15.5,5.1,17.2,4,19.1,4h18.8c1.9,0,3.6,1.1,4.5,2.8l10,20
@@ -163,9 +173,3 @@ export class Hex extends Component {
     );
   }
 }
-Hex.propTypes = {
-  number: PropTypes.number.isRequired,
-  top: PropTypes.number.isRequired,
-  left: PropTypes.number.isRequired,
-  color: PropTypes.string.isRequired,
-};

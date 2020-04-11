@@ -4,7 +4,13 @@ import { EventPipe } from '../../common/event';
 import { colors } from '../../common/hexData';
 import { capitalize } from '../../common/util';
 
-export class Navbar extends Component {
+interface NavbarProps {
+  initialOwnedHexes: { [x: string]: string | any[]; };
+  eventPipe: EventPipe;
+}
+
+
+export class Navbar extends Component<NavbarProps, { counts: {} }> {
   constructor(props) {
     super(props);
 
@@ -25,7 +31,7 @@ export class Navbar extends Component {
     });
   }
   render() {
-    const scoreButtons = [];
+    const scoreButtons: Array<JSX.Element> = [];
     for (let group of Object.keys(colors)) {
       scoreButtons.push(<ScoreButton key={group} group={group} value={this.state.counts[group]} />);
     }
@@ -37,10 +43,7 @@ export class Navbar extends Component {
     );
   }
 }
-Navbar.propTypes = {
-  initialOwnedHexes: PropTypes.object.isRequired,
-  eventPipe: PropTypes.instanceOf(EventPipe).isRequired,
-};
+
 export class ResetButton extends Component {
   render() {
     return (
@@ -50,7 +53,8 @@ export class ResetButton extends Component {
     );
   }
 }
-export class ScoreButton extends Component {
+
+export class ScoreButton extends Component<{group: string, value: number}, {}> {
   render() {
     return (
       <button className="navbar-button score-button" id={`score-button-${this.props.group}`}>
@@ -59,7 +63,3 @@ export class ScoreButton extends Component {
     );
   }
 }
-ScoreButton.propTypes = {
-  group: PropTypes.string.isRequired,
-  value: PropTypes.number.isRequired,
-};

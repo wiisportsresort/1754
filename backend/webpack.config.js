@@ -1,36 +1,31 @@
-import path from 'path';
-import * as webpack from 'webpack';
-import * as dotenv from 'dotenv';
-dotenv.config();
+const path = require('path');
+const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
+
+require('dotenv').config();
 
 const devMode = process.env.NODE_ENV === 'development';
 
-export default <webpack.Configuration>{
+console.log(`Mode: ${devMode ? 'development' : 'production'}`);
+
+/** @type {webpack.Configuration} */
+module.exports = {
   mode: devMode ? 'development' : 'production',
-  entry: './src',
+  entry: './backend/src',
   target: 'node',
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
-    extensions: ['.ts', '.tsx'],
-  },
-  devServer: {
-    stats: {
-      colors: true,
-      children: false,
-    },
+    extensions: ['.ts', '.tsx', '.js'],
   },
   devtool: devMode ? 'inline-source-map' : 'source-map',
   watchOptions: {
     ignored: ['../node_modules/**'],
     aggregateTimeout: 0,
   },
-  plugins: [
-    
-    
-  ],
+  externals: [nodeExternals()],
   module: {
     rules: [
       {
@@ -40,14 +35,7 @@ export default <webpack.Configuration>{
       },
       {
         test: /\.ts(x?)/,
-        use: [
-          {
-            loader: 'ts-loader',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react'],
-            },
-          },
-        ],
+        loader: 'ts-loader',
       },
     ],
   },

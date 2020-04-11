@@ -1,14 +1,18 @@
 export class EventPipe {
+  listeners: {};
+
   constructor() {
     this.listeners = {};
   }
-  on(type, callback) {
+
+  on(type: string, callback: (event: CustomEvent) => any) {
     if (!(type in this.listeners)) {
       this.listeners[type] = [];
     }
     this.listeners[type].push(callback);
   }
-  cancel(type, callback) {
+
+  cancel(type: string, callback: any) {
     if (!(type in this.listeners)) {
       return;
     }
@@ -20,6 +24,7 @@ export class EventPipe {
       }
     }
   }
+
   dispatch(event) {
     if (!(event.type in this.listeners)) {
       return true;
@@ -31,7 +36,3 @@ export class EventPipe {
     return !event.defaultPrevented;
   }
 }
-
-EventPipe.prototype.listeners = null;
-
-

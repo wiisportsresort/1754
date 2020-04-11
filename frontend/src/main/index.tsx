@@ -10,6 +10,7 @@ import './index.scss';
 
 /** A representation of a country/tribe. */
 class Group {
+  initialHexes: number[];
   /**
    * @param {string} name - name of this group. Stick to lowercase letters.
    * @param {...number} initialHexes - numbers of the hexes this group starts with.
@@ -20,25 +21,27 @@ class Group {
 }
 
 class BoardManager extends EventPipe {
+  initialHexOwners: {};
+  initialOwnedHexes: {};
+  hexes: JSX.Element;
+  navbar: JSX.Element;
+
   /**
-   * Create a new board, with the hexes, navbar, and event handler.
+   * Create a new board with hexes, navbar, and event handler.
    * @param {Object.<string, (Array<number>|Group)>} groups groups with their initial owned hexes; can be either an object with arrays of numbers or the instances of `Group`, arrays will be converted to instances if provided.
    */
-  constructor(groups) {
+  constructor(groups: Array<Group> | Object = defaultOwners) {
     super();
 
-    // set default groups if not provided, change into group instances
-    groups = groups || defaultOwners;
+    this.initialHexOwners = {};
+    this.initialOwnedHexes = {};
+
+    // change into group instances
     if (Array.isArray(groups[Object.keys(groups)[0]])) {
       for (const [name, array] of Object.entries(groups)) {
         groups[name] = new Group(...array);
       }
     }
-    
-
-    /** initial owners only, update eventPipe instead */
-    this.initialHexOwners = {};
-    this.initialOwnedHexes = {};
 
     for (const [name, group] of Object.entries(groups)) {
       this.initialOwnedHexes[name] = group.initialHexes;
@@ -54,12 +57,12 @@ class BoardManager extends EventPipe {
     return this;
   }
   /** Draw all 32 hexes into the provided element. */
-  drawHexes(selector) {
+  drawHexes(selector: string) {
     ReactDOM.render(this.hexes, document.querySelector(selector));
     return this;
   }
   /** Draw the button navbar into the provided element. */
-  drawNavbar(selector) {
+  drawNavbar(selector: string) {
     ReactDOM.render(this.navbar, document.querySelector(selector));
     return this;
   }
@@ -81,4 +84,4 @@ function reset() {}
 window.addEventListener('DOMContentLoaded', init);
 window.addEventListener('load', () => (document.body.style.visibility = 'visible'));
 
-$('.header-button--login').click(() => (window.location.href = './login'));
+$('.header-button--login').on('click', () => (window.location.href = './login'));

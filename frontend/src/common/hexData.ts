@@ -1,6 +1,6 @@
 /** X/Y from top/left (in px) for each hex in one-based index format. */
-export const hexLocations = [
-  [], // empty here because of zero-indexing
+export const hexLocations: Array<[number, number]> = [
+  [0, 0], // empty here because of zero-indexing
   [600, 100], // 1
   [600, 170], // 2
   [600, 240], // 3
