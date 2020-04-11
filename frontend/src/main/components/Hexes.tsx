@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ContextMenu, ContextMenuTrigger, MenuItem, hideMenu as hideContextMenu } from 'react-contextmenu';
 import { EventPipe } from '../../common/event';

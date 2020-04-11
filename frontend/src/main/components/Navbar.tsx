@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { EventPipe } from '../../common/event';
 import { colors } from '../../common/hexData';
 import { capitalize } from '../../common/util';
