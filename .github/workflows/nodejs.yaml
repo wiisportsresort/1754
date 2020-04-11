@@ -1,4 +1,4 @@
-name: Node.js Webpack Build
+name: Node.js Build
 
 on: [push]
 
@@ -18,9 +18,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install pnpm
+    - name: Setup pnpm
       run: npm install -g pnpm
     - name: Install dependencies
-      run: pnpm install
+      run: pnpm i
     - name: Build for production
       run: pnpm run build
