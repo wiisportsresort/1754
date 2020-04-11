@@ -84,7 +84,6 @@ web_modules/
 dist
 backend/dist
 frontend/dist
-frontend/public
 
 # Gatsby files
 .cache/
