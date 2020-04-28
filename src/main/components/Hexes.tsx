@@ -1,6 +1,7 @@
-import $ from 'jquery';
-import React, { Component } from 'react';
-import { ContextMenu, ContextMenuTrigger, MenuItem, hideMenu as hideContextMenu } from 'react-contextmenu';
+import * as $ from 'jquery';
+import * as React from 'react';
+import { Component } from 'react';
+import { ContextMenu, ContextMenuTrigger, hideMenu as hideContextMenu, MenuItem } from 'react-contextmenu';
 import { EventPipe } from '../../common/event';
 import { colors, hexLocations as loc } from '../../common/hexData';
 import { capitalize } from '../../common/util';

@@ -1,10 +1,10 @@
-const path = require('path');
-const autoprefixer = require('autoprefixer');
-const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
-const webpack = require('webpack');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const TerserPlugin = require('terser-webpack-plugin');
+import * as path from 'path';
+import * as autoprefixer from 'autoprefixer';
+import * as MiniCSSExtractPlugin from 'mini-css-extract-plugin';
+import * as webpack from 'webpack';
+import * as OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import * as TerserPlugin from 'terser-webpack-plugin';
 
 require('dotenv').config();
 
@@ -36,12 +36,11 @@ const envOptimization = devMode
       ],
     };
 
-/** @type {webpack.Configuration} */
-module.exports = {
+export default <webpack.Configuration>{
   mode: devMode ? 'development' : 'production',
   entry: {
-    main: './frontend/src/main',
-    login: './frontend/src/login',
+    main: './src/main',
+    login: './src/login',
   },
   output: {
     filename: '[name].js',

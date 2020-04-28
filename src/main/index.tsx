@@ -1,6 +1,6 @@
-import $ from 'jquery';
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as $ from 'jquery';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import snackbar from 'snackbar';
 import { Hexes } from './components/Hexes';
 import { Navbar } from './components/Navbar';

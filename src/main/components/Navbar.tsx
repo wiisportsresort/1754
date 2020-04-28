@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import * as React from 'react';
+import { Component } from 'react';
 import { EventPipe } from '../../common/event';
 import { colors } from '../../common/hexData';
 import { capitalize } from '../../common/util';
