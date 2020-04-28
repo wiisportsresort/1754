@@ -23,4 +23,4 @@ jobs:
     - name: Install dependencies
       run: pnpm i
     - name: Build for production
-      run: pnpm run build
+      run: pnpm start build prod
