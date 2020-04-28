@@ -30,7 +30,7 @@ serve.command = serve.command
 build.command = build.command
   .replace('$ENV', `NODE_ENV=${enableProd ? 'production' : 'development'}`)
   .replace('$CMD', 'webpack')
-  .replace('$FLAGS', enableServe ? '' : '--watch')
+  .replace('$FLAGS', enableServe ? '--watch' : '')
   .replace('$ARGS', '');
 
 process.stdin.resume();
