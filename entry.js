@@ -16,7 +16,7 @@ const args = process.argv.slice(2);
 
 const enableServe = args.some(val => val === 'serve'),
   enableDebug     = args.some(val => val === 'debug'),
-  enableProd      = args.some(val => val === '-prod'),
+  enableProd      = args.some(val => val === 'prod'),
   showTimestamps  = args.some(val => val === '-timestamps');
 
 console.log(ch`{reset.yellow.dim main} {reset.blue Starting ${args[0]} in ${args[1]} mode...}`);
@@ -30,7 +30,7 @@ serve.command = serve.command
 build.command = build.command
   .replace('$ENV', `NODE_ENV=${enableProd ? 'production' : 'development'}`)
   .replace('$CMD', 'webpack')
-  .replace('$FLAGS', enableProd ? '' : '--watch')
+  .replace('$FLAGS', enableServe ? '' : '--watch')
   .replace('$ARGS', '');
 
 process.stdin.resume();
