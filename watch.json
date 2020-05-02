@@ -1,0 +1,14 @@
+{
+  "install": {
+    "include": [
+      "package\\.json"
+    ]
+  },
+  "restart": {
+    "include": [
+      "webpack\\.config\\.ts",
+      "\\.env"
+    ]
+  },
+  "throttle": 5000
+}
