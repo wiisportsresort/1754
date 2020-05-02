@@ -1,5 +1,7 @@
 # 1754
 
+![Node.js Build](https://github.com/wiisportsresort/1754/workflows/Node.js%20Build/badge.svg?branch=master)
+
 a game
 
 ## environment
