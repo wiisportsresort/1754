@@ -1,3 +1,5 @@
+import { GroupName } from './props';
+
 /** X/Y from top/left (in px) for each hex in one-based index format. */
 export const hexLocations: Array<[number, number]> = [
   [0, 0], // empty here because of zero-indexing
@@ -32,21 +34,41 @@ export const hexLocations: Array<[number, number]> = [
   [335, 415], // 29
   [335, 485], // 30
   [282, 380], // 31
-  [282, 240] // 32
+  [282, 240], // 32
 ];
 
 /** CSS-formatted colors for each group. */
-export const colors = {
+export const colors: { [group in GroupName]: string } = {
   france: '#3498db',
   britain: '#e94858',
   mohawk: '#82bf6e',
   cherokee: '#9568d0',
   shawnee: '#f18836',
   miami: '#d075c3',
-  ojibwe: '#fedc30'
+  ojibwe: '#fedc30',
 };
 
-export const defaultOwners = {
+export enum SemanticColors {
+  france = 'france',
+  britain = 'britain',
+  mohawk = 'mohawk',
+  cherokee = 'cherokee',
+  shawnee = 'shawnee',
+  miami = 'miami',
+  ojibwe = 'ojibwe',
+}
+
+export enum Colors {
+  blue = 'france',
+  red = 'britain',
+  green = 'mohawk',
+  purple = 'cherokee',
+  orange = 'shawnee',
+  pink = 'miami',
+  yellow = 'ojibwe',
+}
+
+export const defaultOwnersToHexes = {
   france: [1, 4, 13, 14, 15, 16, 25],
   britain: [2, 3, 5, 6, 7, 8, 9],
   mohawk: [11, 12, 17, 18],
@@ -54,4 +76,4 @@ export const defaultOwners = {
   shawnee: [21, 22, 29, 30],
   miami: [23, 24, 28, 31],
   ojibwe: [26, 27, 32],
-}
+};
