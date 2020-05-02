@@ -1,105 +1,760 @@
-@import '../common/vars.scss';
-@import '../common/header.scss';
-@import '../common/contextmenu.scss';
+@import url('https://fonts.googleapis.com/css?family=Concert+One|Lato:400,700');
+@import url('https://fonts.googleapis.com/css?family=Alegreya:900');
+@import url('https://fonts.googleapis.com/css?family=Revalia');
+@import url('https://fonts.googleapis.com/css?family=Patrick+Hand');
 
-@import '~snackbar/src/snackbar.scss';
+$primary: #e8cd5d;
+$secondary: #536a93;
+$tertiary: #c0d7ff;
+$gray: #eeeeee;
+$loyalist: #a61f08;
+$patriot: #536a93;
+$textColor: #363636;
 
-*:not(body) {
-  box-sizing: border-box;
+.gray {
+  background: $gray;
 }
 
-html {
-  background-color: #333;
+.primary {
+  background: $primary;
+}
+
+.secondary {
+  background: $secondary;
+}
+
+.tertiary {
+  background: $tertiary;
+}
+
+// --------------------------------------
+// mixins
+
+@mixin noLink {
+  text-decoration: none;
+  color: $textColor;
+  &:hover {
+    border-left: 3px solid $secondary;
+    padding-left: 5px;
+  }
+}
+
+@mixin card {
+  padding-left: 20px;
+  margin: 10px;
+  border-radius: 5px;
+  text-decoration: none;
 }
 
 body {
+  background: white;
+  color: $textColor;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+}
+
+// --------------------------------------
+// grid
+
+.flexMargin {
+  width: 60%;
   margin: 20px auto;
-  // padding: 20px;
-  width: 800px;
-  font: 16px 'Lato';
+  h2 {
+    margin: 20px 0;
+  }
 }
 
-.spacer {
-  flex-grow: 1;
+.grid {
+  display: grid;
 }
 
-#container {
-  #navbar {
+.units {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.info {
+  grid-template-columns: 1fr 1fr;
+}
+
+// --------------------------------------
+// sections
+
+.section {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.sectionBreak {
+  border-top: 1px solid $gray;
+  margin: 50px auto;
+}
+
+// --------------------------------------
+// navbar
+
+.navbar {
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.9);
+  margin: 0 auto 100px;
+  position: sticky;
+  top: 0;
+  box-shadow: 0px 5px 5px #cccccc;
+  ul {
+    width: 60%;
+    margin: 0 auto 20px auto;
     display: flex;
-    justify-content: space-between;
-    margin: 20px 0 20px;
-    width: 800px;
+    flex-direction: row;
+    list-style: none;
+    align-items: stretch;
+    padding-left: 0;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
 
-    .navbar-button {
-      font-family: 'Concert One';
-      font-size: 1em;
-      padding: 5px 11px 9px;
-      border-radius: 5px;
-      border: 2px solid transparent;
-      transition: $button-anim;
-      &:hover {
-        border: 2px solid #333;
-      }
-      cursor: pointer;
+#logo {
+  flex: 5;
+  font-size: 1.2em;
+  justify-content: center;
+  font-family: 'Alegreya', serif;
+  a {
+    @include noLink;
+  }
+}
+
+.menuLink {
+  flex: 1;
+  margin: 5px;
+  a {
+    @include noLink;
+  }
+}
+
+// --------------------------------------
+// cards
+
+.infoCard {
+  @include card;
+  background: $tertiary;
+  color: $textColor;
+  filter: drop-shadow(7px 7px 0 $secondary);
+  ul {
+    list-style: none;
+  }
+  &:hover {
+    color: white;
+    background: $secondary;
+    filter: drop-shadow(7px 7px 0 $tertiary);
+  }
+}
+
+.quickLink {
+  @include card;
+  background: $primary;
+  color: $textColor;
+  filter: drop-shadow(7px 7px 0 $secondary);
+  ul {
+    list-style: none;
+  }
+  &:hover {
+    color: white;
+    background: $secondary;
+    filter: drop-shadow(7px 7px 0 $primary);
+  }
+}
+
+.unitCard {
+  @include card;
+  background: $secondary;
+  color: white;
+  filter: drop-shadow(7px 7px 0 $tertiary);
+  &:hover {
+    color: $textColor;
+    background: $tertiary;
+    filter: drop-shadow(7px 7px 0 $secondary);
+  }
+}
+
+// --------------------------------------
+// images
+
+.image {
+  border-radius: 10px;
+}
+
+.is-45 {
+  width: 45%;
+  margin: 5px;
+}
+
+// --------------------------------------
+// footer
+
+footer {
+  margin: 70px auto 0 auto;
+}
+
+.footerContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 60%;
+  margin: 0 auto;
+  div,
+  span {
+    text-align: center;
+    padding: 100px 0;
+  }
+}
+
+// --------------------------------------
+// components
+
+#homework {
+  min-width: 900px;
+}
+
+.faq p {
+  margin-left: 20px;
+}
+
+.justified {
+  text-align: justify;
+}
+
+.button {
+  background: $secondary;
+  padding: 20px;
+  border-radius: 5px;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  &:hover {
+    filter: brightness(90%);
+  }
+}
+
+a {
+  color: $secondary;
+}
+
+// --------------------------------------
+// articles of confederation
+
+.flexMargin {
+  .artConf {
+    width: 40%;
+  }
+}
+
+.addInfo {
+  margin-left: 20px;
+  font-family: 'Patrick Hand', cursive;
+  color: #b00020;
+  background: $gray;
+  border-radius: 0 5px 5px 5px;
+  padding: 10px 25px;
+  border-left: 5px solid #b00020;
+  display: inline-block;
+  width: 40%;
+}
+
+// --------------------------------------
+// writing guide
+
+.writingGuide {
+  display: flex;
+  justify-content: space-between;
+  .main {
+    text-align: justify;
+    width: 65%;
+    margin-right: 2.5%;
+    padding-right: 5%;
+    border-right: 1px solid $gray;
+    .anchor {
+      display: block;
+      position: relative;
+      top: -150px;
+      visibility: hidden;
     }
-
-    @each $group, $color in $colors {
-      #score-button-#{$group} {
-        background: $color;
+  }
+  .sidebar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 100px;
+    width: 20%;
+    background: $gray;
+    border-radius: 5px;
+    display: block;
+    padding: 2.5%;
+    height: 450px;
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      li {
+        margin-bottom: 7px;
+      }
+      li a {
+        padding-left: 5px;
+        text-decoration: none;
+        color: #363636;
         &:hover {
-          background: #333;
-          color: $color;
-          border: 2px solid $color;
+          border-left: 3px solid $secondary;
         }
       }
     }
-
-    #navbar-button-reset {
-      background: #333;
-      color: #ddd;
-      &:hover {
-        background: #ddd;
-        color: #333;
-        border: 2px solid #ddd;
-      }
-    }
-  }
-  #window {
-    position: relative;
-    height: 600px;
-    width: 800px;
-    margin: 0;
-    border-radius: 10px;
-    background-color: #3f5666;
-    #north-america-svg {
-      position: absolute;
-      border-radius: 10px;
-      clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);
-    }
-    .hex {
-      cursor: pointer;
-      width: 75px;
-      position: absolute;
-      // clip-path: polygon(4% 48.9%, 26.67% 95.65%, 74.67% 95.66%, 97.33% 50.21%, 73.34% 3.93%, 28% 3.94%);
-      // clip-path: polygon(0% 48.9%, 25.33% 99.58%, 76.01% 99.59%, 101.33% 48.9%, 73.34% 0%, 26.67% 0.01%);
-      clip-path: polygon(-5% 50%, 25% 105%, 77% 105%, 105% 50%, 80% -5%, 25% -5%);
-      // clip-path: polygon(-1.33% 48.9%, 25.33% 99.58%, 77.35% 100.90%, 101.33% 48.9%, 78.67% 0%, 21.34% 0.01%);
-      .hex-stroke {
-        stroke: white;
-        stroke-width: 2px;
-        transition: fill $anim-curve $anim-length;
-      }
-      .hex-text {
-        font-family: 'Concert One';
-        font-size: 30px;
-        text-anchor: middle;
-      }
-      &:hover .hex-text {
-        fill: white;
-        transition: fill $anim-curve $anim-length;
-      }
-    }
   }
 }
 
+.block {
+  margin-left: 20px;
+  background: $gray;
+  padding: 5px 25px;
+  border-radius: 5px;
+}
 
+.quote {
+  border-left: 10px solid $secondary;
+  li {
+    padding-bottom: 1.2em;
+  }
+}
+
+.worksCited {
+  background: $gray;
+  width: 70%;
+  padding: 5px 25px;
+  border-radius: 5px;
+}
+
+#worksCitedCenter {
+  text-align: center;
+}
+
+iframe {
+  width: 750px;
+  height: 500px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+// --------------------------------------
+// american revolution
+
+@mixin event {
+  background: $gray;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+@mixin lineDown {
+  border-left: 3px solid $gray;
+}
+
+@mixin loyalist {
+  background: $loyalist;
+  color: white;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+@mixin patriot {
+  background: $patriot;
+  color: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.definitiions {
+  background: $gray;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 0 0 30px 20px;
+}
+
+.revolutionWrapper {
+  display: grid;
+  grid-template-columns: 50px auto;
+  grid-gap: 1em;
+  p {
+    text-align: justify;
+  }
+  img {
+    max-width: 100%;
+  }
+  li {
+    margin-bottom: 10px;
+  }
+  .wikiQuote {
+    font-style: italic;
+    margin-left: 30px;
+  }
+  .date {
+    background: $primary;
+    padding: 5px;
+    height: 30px;
+    font-weight: 700;
+  }
+  #lineDown1763 {
+    @include lineDown;
+    grid-row: 2/7;
+  }
+  .primarySrc {
+    background: yellow;
+    padding: 20px;
+    border-left: 10px solid blue;
+    border-radius: 5px;
+  }
+  #yr1763 {
+    grid-column: 1/2;
+    grid-row: 1/2;
+  }
+  #paris1763 {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 1 / 3;
+  }
+
+  #pontiac {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 3/5;
+  }
+
+  #proclamation {
+    @include event;
+    grid-column: 2/3;
+    grid-row: 5/6;
+  }
+
+  #proclamationImg {
+    @include event;
+    grid-column: 3/4;
+    grid-row: 5/7;
+  }
+
+  #yr1764 {
+    grid-column: 1/2;
+    grid-row: 7/8;
+  }
+  #lineDown1764 {
+    @include lineDown;
+    grid-row: 8/11;
+  }
+  #sugarAct {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 7/9;
+  }
+  // #sugarActLoyalist {
+  //     @include loyalist;
+  //     grid-column: 3/4;
+  //     grid-row: 7/8;
+  // }
+  // #sugarActPatriot {
+  //     @include patriot;
+  //     grid-column: 3/4;
+  //     grid-row: 8/9;
+  // }
+  #committeesCorrespondence {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 9/11;
+  }
+
+  #yr1765 {
+    grid-column: 1/2;
+    grid-row: 11/12;
+  }
+  #lineDown1765 {
+    @include lineDown;
+    grid-row: 12/17;
+  }
+  #quarteringAct {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 11/13;
+  }
+  // #quarteringActLoyalist {
+  //     @include loyalist;
+  //     grid-column: 3/4;
+  //     grid-row: 11/12;
+  // }
+  // #quarteringActPatriot {
+  //     @include patriot;
+  //     grid-column: 3/4;
+  //     grid-row: 12/13;
+  // }
+
+  #stampAct {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 13/15;
+  }
+  // #stampActLoyalist {
+  //     @include loyalist;
+  //     grid-column: 3/4;
+  //     grid-row: 13/14;
+  // }
+  // #stampActPatriot {
+  //     @include patriot;
+  //     grid-column: 3/4;
+  //     grid-row: 14/15;
+  // }
+
+  #sonsOfLiberty {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 15/17;
+  }
+  // #sonsOfLibertyLoyalist {
+  //     @include loyalist;
+  //     grid-column: 3/4;
+  //     grid-row: 15/16;
+  // }
+  // #sonsOfLibertyPatriot {
+  //     @include patriot;
+  //     grid-column: 3/4;
+  //     grid-row: 16/17;
+  // }
+
+  #yr1766 {
+    grid-column: 1/2;
+    grid-row: 17/18;
+  }
+
+  #stampActRepealed {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 17/19;
+  }
+  #lineDown1766 {
+    @include lineDown;
+    grid-row: 18/19;
+  }
+  #yr1767 {
+    grid-column: 1/2;
+    grid-row: 19/20;
+  }
+  #townshendActs {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 19/21;
+  }
+  #lineDown1767 {
+    @include lineDown;
+    grid-row: 20/21;
+  }
+  #yr1768 {
+    grid-column: 1/2;
+    grid-row: 21/22;
+  }
+  #occupyBoston {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 21/23;
+  }
+  #lineDown1768 {
+    @include lineDown;
+    grid-row: 22/23;
+  }
+  #yr1770 {
+    grid-column: 1/2;
+    grid-row: 23/24;
+  }
+  #bostonMassacre {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 23/25;
+  }
+  // #bostonMassacreLoyalist {
+  //     @include loyalist;
+  //     grid-column: 3/4;
+  //     grid-row: 23/24;
+  // }
+  // #bostonMassacrePatriot {
+  //     @include patriot;
+  //     grid-column: 3/4;
+  //     grid-row: 24/25;
+  // }
+
+  #townshendRepealed {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 25/27;
+  }
+  #lineDown1770 {
+    @include lineDown;
+    grid-row: 24/27;
+  }
+
+  #yr1773 {
+    grid-column: 1/2;
+    grid-row: 27/28;
+  }
+  #teaAct {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 27/29;
+  }
+  // #teaActLoyalist {
+  //     @include loyalist;
+  //     grid-column: 3/4;
+  //     grid-row: 27/28;
+  // }
+  // #teaActPatriot {
+  //     @include patriot;
+  //     grid-column: 3/4;
+  //     grid-row: 28/29;
+  // }
+
+  #bostonTeaParty {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 29/31;
+  }
+  // #bostonTeaPartyLoyalist {
+  //     @include loyalist;
+  //     grid-column: 3/4;
+  //     grid-row: 29/30;
+  // }
+  // #bostonTeaPartyPatriot {
+  //     @include patriot;
+  //     grid-column: 3/4;
+  //     grid-row: 30/31;
+  // }
+  #lineDown1773 {
+    @include lineDown;
+    grid-row: 28/31;
+  }
+
+  #yr1774 {
+    grid-column: 1/2;
+    grid-row: 31/32;
+  }
+  #intolerableActs {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 31/33;
+  }
+  #firstContinentalCongress {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 33/35;
+  }
+  #lineDown1774 {
+    @include lineDown;
+    grid-row: 32/35;
+  }
+  #yr1775 {
+    grid-column: 1/2;
+    grid-row: 35/36;
+  }
+  #lexingtonConcord {
+    @include event;
+    grid-column: 2/4;
+    grid-row: 35/37;
+  }
+}
+
+// --------------------------------------
+// media breakpoints
+
+@media (max-width: 767px) {
+  .flexMargin {
+    width: 95%;
+  }
+  .units {
+    grid-template-columns: 1fr;
+  }
+  .info {
+    grid-template-columns: 1fr;
+  }
+  .footerContent {
+    grid-template-columns: 1fr;
+    div,
+    span {
+      text-align: center;
+      padding: 20px 0;
+    }
+    #firstFooter {
+      margin-top: 20px;
+    }
+    #thirdFooter {
+      margin-bottom: 20px;
+    }
+  }
+  .navbar {
+    position: static;
+    ul {
+      flex-direction: column;
+      width: 95%;
+    }
+    #logo {
+      order: 1;
+    }
+    .menuLink {
+      order: 2;
+      margin-bottom: 30px;
+    }
+  }
+  .writingGuide {
+    .main {
+      text-align: justify;
+      width: 90%;
+      margin: 0 auto;
+      padding-right: 0;
+      border-right: 0;
+      iframe {
+        display: none;
+      }
+    }
+    .sidebar {
+      display: none;
+    }
+  }
+  .is-45 {
+    width: 100%;
+  }
+  img {
+    width: 100%;
+  }
+}
+
+@media all and (min-width: 768px) and (max-width: 1279px) {
+  .flexMargin {
+    width: 80%;
+  }
+  .units {
+    grid-template-columns: 1fr 1fr;
+  }
+  .info {
+    grid-template-columns: 1fr 1fr;
+  }
+  .footerContent {
+    grid-template-columns: 1fr 1fr 1fr;
+    div,
+    span {
+      text-align: center;
+      padding: 100px 0;
+    }
+  }
+  .writingGuide {
+    .main {
+      iframe {
+        display: none;
+      }
+    }
+  }
+  .is-45 {
+    width: 100%;
+  }
+  img {
+    width: 100%;
+  }
+}
