@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"license": "MIT",
 	"scripts": {
-		"start": "pnpm run dev",
+		"start": "pnpm run prod",
 		"entry": "node entry",
 		"debug": "node entry serve,build debug",
 		"dev": "node entry serve,build dev",
