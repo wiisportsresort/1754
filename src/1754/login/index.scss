@@ -1,0 +1,40 @@
+@import '../common/master';
+
+.login-selector {
+  margin-top: 1em;
+  left: 50%;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  max-height: 400px;
+  transition: max-height 0.5s;
+  button {
+    margin-right: 4px;
+  }
+}
+
+.login-form {
+  max-height: 0px;
+  margin-top: 16px;
+  overflow: hidden;
+  transition: max-height 0.5s;
+  
+  .form-container .form-header {
+    display: flex;
+    margin-bottom: 16px;
+    h2 {
+      display: inline;
+      margin: 0;
+    }
+  }
+  input {
+    padding-left: 8px;
+    background: #ddd;
+    margin-bottom: 16px;
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    width: 100%;
+  }
+}

@@ -1,0 +1,88 @@
+@import '../common/master';
+@import '../common/contextmenu';
+
+@import '~snackbar/src/snackbar';
+
+
+.container {
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0 8px;
+    width: 800px;
+  }
+  .window {
+    position: relative;
+    height: 600px;
+    width: 800px;
+    margin: 0;
+    border-radius: 10px;
+    background-color: #3f5666;
+    #north-america-svg {
+      position: absolute;
+      border-radius: 10px;
+      clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);
+    }
+    .hex {
+      cursor: pointer;
+      width: 75px;
+      position: absolute;
+      clip-path: polygon(-5% 50%, 25% 105%, 77% 105%, 105% 50%, 80% -5%, 25% -5%);
+
+      .stroke {
+        stroke: white;
+        stroke-width: 2px;
+        transition: fill $anim-curve $anim-length;
+      }
+      .text {
+        font-family: 'Concert One';
+        font-size: 30px;
+        text-anchor: middle;
+      }
+      &:hover .text {
+        fill: white;
+        transition: fill $anim-curve $anim-length;
+      }
+    }
+  }
+}
+
+.info-header {
+  margin: 20px 0px 20px;
+  font-family: 'Concert One';
+  color: #eee8aa;
+}
+
+.info-container {
+  font-family: 'Lato', sans-serif;
+  font-size: 1em;
+  background: #eee;
+  color: #333;
+  padding: 10px;
+  border-radius: 10px;
+
+  ol.content {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    li {
+      padding-bottom: 5px;
+    }
+  }
+
+  .content:not(ol) {
+    padding: 0 30px;
+    .flex {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      div {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+    }
+  }
+}
