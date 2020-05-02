@@ -1,18 +1,20 @@
+import * as ch from 'chalk';
 import * as crypto from 'crypto';
-import * as fse from 'fs-extra';
-import * as path from 'path';
-import * as express from 'express';
-import * as jwt from 'jsonwebtoken';
 import { EventEmitter } from 'events';
+import * as express from 'express';
+import * as fse from 'fs-extra';
+import * as inquirer from 'inquirer';
+import * as jwt from 'jsonwebtoken';
+import * as path from 'path';
 import { promisify } from 'util';
-import { LoginData, JWTPayload, Keystore } from '../types';
-import { objectToMap, mapToObject, resolve } from './common';
+import { JWTPayload, Keystore, LoginRequest, RegisterResponse, LoginResponse } from './types';
+import { mapToObject, objectToMap, resolvePath } from './common';
 
 const SALT_LENGTH = 64,
   KEY_LENGTH = 64,
   ITERATIONS = 200000;
 
-const JWT_SECRET = fse.readFileSync(resolve('data/private.key'));
+const JWT_SECRET = fse.readFileSync(resolvePath('data/private.key'));
 const JWT_EXPIRY_SECONDS = 60 * 15; // 15 min
 
 const pbkdf2Promise = promisify(crypto.pbkdf2);
@@ -82,7 +84,7 @@ export class UserStore {
   /** Write the current contents to disk.
    * Emits `write` after complete. */
   async writeFile() {
-    await fse.writeFile(UserStore.defaultPath, JSON.stringify(mapToObject(this.map), null, 2));
+    await fse.writeFile(UserStore.defaultPath, JSON.stringify(mapToObject(this.map)));
     this.events.emit('write');
   }
   /** Set the keystore for a given user.
@@ -117,12 +119,19 @@ const refreshTokens = new Map();
 export function handleLogin() {
   return async (req: express.Request, res: express.Response) => {
     try {
-      const { id, secret, type }: LoginData = req.body;
+      const { id, secret, type }: LoginRequest = req.body;
       if (type === 'student') {
       } else {
         if (users.has(id)) {
           const keystore = users.get(id);
-          if (!keystore) return;
+          if (!keystore) {
+            res.json(<LoginResponse>{
+              success: false,
+              type: 'teacher',
+              reason: 'Keystore does not exist for user.',
+            });
+            return;
+          }
           if (await verifyPassword(secret, keystore)) {
             // correct username and password; generate jwt now
             const payload: JWTPayload = { id, type };
@@ -130,6 +139,12 @@ export function handleLogin() {
               algorithm: 'HS256',
               expiresIn: JWT_EXPIRY_SECONDS,
             });
+            res.cookie('token', token);
+            res.json(<LoginResponse>{
+              success: true,
+              type: 'teacher',
+            });
+            // res.redirect('/');
           }
         }
       }
@@ -163,4 +178,71 @@ export function handleLogin() {
 
 export function handleRefresh() {
   return async (req: express.Request, res: express.Response) => {};
+}
+
+export function handleLogout() {
+  return async (req: express.Request, res: express.Response) => {};
+}
+export function handleRegister() {
+  return async (req: express.Request, res: express.Response) => {
+    const { id, secret } = req.body;
+    if (users.has(id)) {
+      res.json(<RegisterResponse>{
+        success: false,
+        reason: 'User is already registered.',
+      });
+      return;
+    }
+
+    // wait for either the user to respond to the prompt or 60s to elapse
+    const result: { allow: boolean; timedOut?: boolean } = await new Promise(
+      (resolve, reject) => {
+        const prompt = inquirer.prompt({
+          type: 'confirm',
+          message: ch`{reset.yellow.bold ${req.ip} wants to register the account {reset.blue ${id}}, allow?}`,
+          name: 'allow',
+          prefix: '⚠️ ',
+          default: false,
+        });
+
+        let closePrompt = () => {
+          // @ts-ignore | i don't know why this is protected in @types/inquirer
+          prompt.ui.close();
+          console.log('');
+          console.log(ch`{reset.red Timed out after 60s.}`);
+          resolve({ allow: false, timedOut: true });
+        };
+        const timeout = setTimeout(closePrompt, 60000);
+
+        prompt.then(result => {
+          result = result as { allow: boolean };
+          clearTimeout(timeout);
+          // @ts-ignore
+          resolve({ allow: result.allow });
+          // closePrompt = () => {};
+        });
+      }
+    );
+
+    if (result.allow) {
+      console.log(ch`{green Register request allowed.}`);
+
+      res.json(<RegisterResponse>{ success: true });
+      return users.set(id, await generateKey(secret));
+    } else if (result.timedOut) {
+      console.log(ch`{red Register request denied.}`);
+
+      res.json(<RegisterResponse>{
+        success: false,
+        reason: 'Server timed out.',
+      });
+    } else {
+      console.log(ch`{red Register request denied.}`);
+
+      res.json(<RegisterResponse>{
+        success: false,
+        reason: 'Server denied request',
+      });
+    }
+  };
 }
