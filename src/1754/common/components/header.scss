@@ -1,0 +1,22 @@
+@import '../master';
+
+.header {
+  display: flex;
+  height: 48px;
+  font-family: 'Concert One';
+  align-items: center;
+
+  .title {
+    padding: 0;
+    margin: 0;
+    color: #eee8aa;
+    font-size: 3em;
+    display: inline;
+  }
+
+  .text {
+    font: 1em 'Lato';
+    color: white;
+    margin-right: 8px;
+  }
+}

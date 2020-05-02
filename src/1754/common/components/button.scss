@@ -1,0 +1,60 @@
+@import '../master';
+
+.button {
+  font: 1em 'Concert One';
+  padding: 5px 11px 9px;
+  border-radius: 5px;
+  transition: $button-anim;
+  border: none;
+  &:disabled {
+    color: #333;
+    &:hover {
+      cursor: default;
+    }
+  }
+  &.raised {
+    // background: #ddd;
+    // color: #333;
+    border: 2px solid transparent;
+    &:not(:disabled):hover {
+      cursor: pointer;
+      // background: #333;
+      // color: #ddd;
+      // border: 2px solid #ddd;
+    }
+  }
+  &.flat {
+    background: #333;
+    color: #ddd;
+    &:not(:disabled):hover {
+      background: #ddd;
+      color: #333;
+      border: none;
+      cursor: pointer;
+    }
+  }
+}
+
+.icon.with-text {
+  margin-right: 4px;
+}
+
+.icon-button {
+  border-radius: 50%;
+  border: 2px solid transparent;
+  margin-right: 8px;
+  height: 30px;
+  width: 30px;
+  padding: 4px;
+  transition: $button-anim;
+  fill: #ddd;
+  color: #ddd;
+  background: transparent;
+  &:not(:disabled):hover {
+    color: #333;
+    fill: #333;
+    background: #ddd;
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+}
