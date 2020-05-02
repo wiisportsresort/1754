@@ -20,6 +20,18 @@ $colors: (
   flex-grow: 1;
 }
 
-button {
-  cursor: pointer;
+*:not(body) {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: #333;
+}
+
+body {
+  color: #ddd;
+  margin: 20px auto;
+  // padding: 20px;
+  max-width: 800px;
+  font: 16px 'Lato';
 }

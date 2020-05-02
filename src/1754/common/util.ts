@@ -1,3 +1,6 @@
+/** Captializes the first letter in the string. */
+export const capitalize = (string: string) => string[0].toUpperCase() + string.slice(1);
+
 export class EventPipe {
   listeners: {};
 
@@ -25,7 +28,7 @@ export class EventPipe {
     }
   }
 
-  dispatch(event) {
+  dispatch(event: CustomEvent) {
     if (!(event.type in this.listeners)) {
       return true;
     }
