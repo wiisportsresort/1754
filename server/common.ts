@@ -10,7 +10,7 @@ export function strInsert(str: string, start: number, del: number, substr: strin
 }
 
 /** Resolve a directory/file from the project root. */
-export function resolve(dir: string) {
+export function resolvePath(dir: string) {
   return path.resolve(process.cwd(), dir);
 }
 
