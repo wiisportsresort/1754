@@ -11,7 +11,7 @@ const server = createServer(app);
 const io = createSockets(socketio(server, { serveClient: false }));
 
 // open server
-const port = process.env.SERVER_PORT;
+const port = process.env.PORT;
 if (port == undefined) {
   console.error(ch`{red Error: SERVER_PORT env variable was undefined.}`);
   process.exit(1);
