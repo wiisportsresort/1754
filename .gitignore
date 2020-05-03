@@ -81,9 +81,6 @@ web_modules/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
-backend/dist
-frontend/dist
 
 # Gatsby files
 .cache/
