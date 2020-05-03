@@ -4,8 +4,11 @@
 	"description": "game",
 	"version": "1.0.0",
 	"license": "MIT",
+	"engines": {
+    "node": "12.x"
+  },
 	"scripts": {
-		"start": "pnpm run dev",
+		"start": "pnpm run prod",
 		"entry": "node entry",
 		"debug": "node entry serve,build debug",
 		"dev": "node entry serve,build dev",
