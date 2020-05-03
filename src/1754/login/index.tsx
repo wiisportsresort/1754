@@ -4,7 +4,7 @@ import { Component } from 'react';
 import * as ReactDOM from 'react-dom';
 import { LoginRequest } from '../../../server/types';
 import { Button, Icon, IconButton } from '../common/components/button';
-import { SemanticColors } from '../common/hexdata';
+import { SemanticColors, Colors } from '../common/hexdata';
 import { Header, Spacer } from '../common/components/header';
 
 class StudentForm extends Component {
@@ -22,7 +22,7 @@ class StudentForm extends Component {
           <input id="form-id" placeholder="Name" />
           <input id="form-secret" placeholder="Game code" />
 
-          <Button color={SemanticColors.mohawk} className="button-login" type="raised">
+          <Button color={Colors.green} className="button-login" type="raised">
             Join
           </Button>
         </div>
