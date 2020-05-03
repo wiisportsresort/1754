@@ -14,7 +14,8 @@ const SALT_LENGTH = 64,
   KEY_LENGTH = 64,
   ITERATIONS = 200000;
 
-const JWT_SECRET = fse.readFileSync(resolvePath('data/private.key'));
+const JWT_SECRET = 'secret';
+// fse.readFileSync(resolvePath('data/private.key'));
 const JWT_EXPIRY_SECONDS = 60 * 15; // 15 min
 
 const pbkdf2Promise = promisify(crypto.pbkdf2);
