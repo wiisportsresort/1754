@@ -11,8 +11,9 @@ import { HTMLFormProps } from '../common/props';
 declare global {
   interface Window {
     init: () => any;
-    allowSubmission: () => any;
-    denySubmission: () => any;
+    // allowSubmission: () => any;
+    // denySubmission: () => any;
+    registerForm: RegisterForm | null;
   }
   const grecaptcha: {
     reset: () => void;
@@ -32,6 +33,25 @@ declare global {
 }
 
 class RegisterForm extends Component<HTMLFormProps, {}> {
+  registerButtonRef: React.RefObject<Button>;
+  
+  constructor(props) {
+    super(props);
+
+    this.registerButtonRef = React.createRef<Button>();
+  }
+
+  allowSubmission() {
+    this.registerButtonRef.current?.modify({
+      disabled: false,
+    });
+  }
+  denySubmission() {
+    this.registerButtonRef.current?.modify({
+      disabled: true,
+    });
+  }
+
   render() {
     return (
       <form {...this.props}>
@@ -53,7 +73,13 @@ class RegisterForm extends Component<HTMLFormProps, {}> {
 
           <div id="recaptcha"></div>
 
-          <Button disabled color={SemanticColors.france} className="button-register">
+          <Button
+            ref={this.registerButtonRef}
+            disabled
+            color={SemanticColors.france}
+            className="button-register"
+            stateful
+          >
             Login
           </Button>
 
@@ -75,7 +101,10 @@ function renderForm() {
         <Button className="header-button-back">Back</Button>
       </Header>
 
-      <RegisterForm className="register-form" />
+      <RegisterForm
+        className="register-form"
+        ref={registerForm => (window.registerForm = registerForm)}
+      />
     </>,
     document.querySelector('#app')
   );
@@ -88,7 +117,7 @@ function renderForm() {
   (function attatchFormListeners() {
     $('.button-register').on('click', function (event) {
       event.preventDefault();
-      denySubmission();
+      window.registerForm?.denySubmission()
 
       ReactDOM.unmountComponentAtNode(response);
       ReactDOM.render(
@@ -115,25 +144,18 @@ function renderForm() {
             ReactDOM.render(<div className="error">Error: {data.reason}</div>, response);
           } else {
             ReactDOM.render(<div className="success">Success! Redirecting...</div>, response);
-            setTimeout(() => (location.href = '/'), 500);
+            setTimeout(() => (location.href = '/'), 2000);
           }
           grecaptcha.reset();
-          denySubmission();
+          window.registerForm?.denySubmission()
         })
         .fail(function (data) {
           console.log('Register request failed.');
           console.log(data);
           grecaptcha.reset();
-          denySubmission();
+          window.registerForm?.denySubmission()
         });
     });
-
-    const $registerButton = $('.button-register');
-    const allowSubmission = () => $registerButton.removeAttr('disabled');
-    const denySubmission = () => $registerButton.attr('disabled');
-
-    window.allowSubmission = allowSubmission;
-    window.denySubmission = denySubmission;
   })();
 }
 
@@ -141,12 +163,12 @@ window.init = () => {
   renderForm();
 
   const recaptchaEl = document.querySelector('#recaptcha');
-  if (recaptchaEl != null)
+  if (recaptchaEl != null && window.registerForm != null)
     grecaptcha.render(recaptchaEl, {
       sitekey: process.env.GRECAPTCHA_SITE_KEY,
       theme: 'dark',
-      'expired-callback': window.denySubmission,
-      callback: window.allowSubmission,
+      'expired-callback': () => window.registerForm?.denySubmission(),
+      callback: () => window.registerForm?.allowSubmission(),
     });
 
   $('.header-button-back').on('click', () => (location.href = '/'));
