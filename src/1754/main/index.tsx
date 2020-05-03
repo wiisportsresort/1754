@@ -66,10 +66,10 @@ export class Game extends EventPipe {
 const game = new Game();
 
 function init(_event: any) {
-  if (window.innerWidth < 800)
-    snackbar.show(
-      'Your screen may be too small to properly display this website. Consider using a screen greater than 800px in width.'
-    );
+  // if (window.innerWidth < 800)
+  //   snackbar.show(
+  //     'Your screen may be too small to properly display this website. Consider using a screen greater than 800px in width.'
+  //   );
 
   // game.drawHexes('.hexes').drawNavbar('.navbar');
 
