@@ -3,8 +3,8 @@
 	"name": "1754",
 	"description": "game",
 	"version": "1.0.0",
-	"license": "MIT",
-	"engines": {
+  "license": "MIT",
+  "engines": {
     "node": "12.x"
   },
 	"scripts": {
@@ -14,7 +14,8 @@
 		"dev": "node entry serve,build dev",
 		"prod": "node entry build prod && node entry serve prod",
 		"help": "node entry help",
-		"keygen": "node keygen",
+    "keygen": "node keygen",
+    "postinstall": "npm shrinkwrap && mv npm-shrinkwrap.json package-lock.json",
 		"clean": "rm -r dist/*"
 	},
 	"dependencies": {
