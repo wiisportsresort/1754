@@ -22,3 +22,13 @@ jobs:
       run: npm i
     - name: Build for production
       run: npm run entry build prod
+    - name: Upload bundle analysis for main
+      uses: actions/upload-artifact@v2
+      with:
+        name: analysis-main.html
+        path: dist/views/analyze.html
+    - name: Upload bundle analysis for 1754
+      uses: actions/upload-artifact@v2
+      with:
+        name: analysis-1754.html
+        path: dist/1754/views/analyze.html
