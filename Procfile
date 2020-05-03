@@ -1,1 +1,1 @@
-web: npm run prod
+web: node_modules/webpack/bin/webpack.js && npm run entry serve prod
