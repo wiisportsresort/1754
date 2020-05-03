@@ -12,12 +12,23 @@ const io = createSockets(socketio(server, { serveClient: false }));
 
 // open server
 const port = process.env.SERVER_PORT;
-if (port == undefined) throw new Error('SERVER_PORT env variable was undefined.');
-const listener = server.listen(port, () =>
-  console.log(ch`{green Server opened on port ${port}}`)
-);
+if (port == undefined) {
+  console.error(ch`{red Error: SERVER_PORT env variable was undefined.}`);
+  process.exit(1);
+}
 
-process.stdin.resume(); // don't exit until we explicitly exit
+server.on('error', err => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(
+      ch`{red Error: port ${port} is being used by another process. Kill that process and try again.}
+{reset.blue Hint: type {bold ss -tlpn | grep "*:${port}"}}
+`
+    );
+    process.exit(1);
+  }
+});
+
+const listener = server.listen(port, () => console.log(ch`{green Server opened on port ${port}}`));
 
 // graceful exit
 const exitSignals: Array<NodeJS.Signals> = ['SIGTERM', 'SIGUSR2', 'SIGINT'];
@@ -32,3 +43,5 @@ exitSignals.forEach(signal =>
     });
   })
 );
+
+process.stdin.resume(); // don't exit until we explicitly exit

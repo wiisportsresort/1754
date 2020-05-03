@@ -4,7 +4,7 @@
     "pretty": true,
     "target": "es5",
     "module": "commonjs",
-    "lib": ["ES2015", "DOM", "ES2018.AsyncIterable"],
+    "lib": ["ES2015", "DOM", "ES2018.AsyncIterable", "ESNext"],
     "jsx": "react",
     "strict": true,
     "sourceMap": true,

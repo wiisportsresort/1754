@@ -18,9 +18,17 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Setup pnpm
-      run: npm install -g pnpm
     - name: Install dependencies
-      run: pnpm i
+      run: npm i
     - name: Build for production
-      run: pnpm run entry build prod
+      run: npm run entry build prod
+    - name: Upload bundle analysis for main
+      uses: actions/upload-artifact@v2
+      with:
+        name: analysis-main.html
+        path: dist/views/analyze.html
+    - name: Upload bundle analysis for 1754
+      uses: actions/upload-artifact@v2
+      with:
+        name: analysis-1754.html
+        path: dist/1754/views/analyze.html

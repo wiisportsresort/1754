@@ -24,11 +24,10 @@ const htmlPlugins = (templates: Array<string>) => {
 const unitTemplates: Array<string> = [];
 for (let i = 0; i < 12; i++) unitTemplates.push(`unit${i + 1}`);
 
-export default function () {
+export default function (): webpack.Configuration {
   return {
     entry: { main: ['./src/main/index.ts', './src/main/index.scss'] },
     output: {
-      filename: devMode ? '[name].js' : '[name].[contenthash].js',
       path: path.resolve(__dirname, 'dist'),
       publicPath: '/',
     },

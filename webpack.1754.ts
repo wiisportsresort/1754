@@ -21,16 +21,15 @@ const htmlPlugins = (entry: { [chunk: string]: HTMLWebpackPlugin.Options }) => {
   return output;
 };
 
-export default function () {
+export default function (): webpack.Configuration {
   return {
     entry: {
       main: ['./src/1754/main/index.tsx', './src/1754/main/index.scss'],
-      login: ['./src/1754/main/index.tsx', './src/1754/main/index.scss'],
-      register: ['./src/1754/main/index.tsx', './src/1754/main/index.scss'],
-      dashboard: ['./src/1754/main/index.tsx', './src/1754/main/index.scss'],
+      login: ['./src/1754/login/index.tsx', './src/1754/login/index.scss'],
+      register: ['./src/1754/register/index.tsx', './src/1754/register/index.scss'],
+      dashboard: ['./src/1754/dashboard/index.tsx', './src/1754/dashboard/index.scss'],
     },
     output: {
-      filename: devMode ? '[name].js' : '[name].[contenthash].js',
       path: path.resolve(__dirname, 'dist/1754'),
       publicPath: '/1754',
     },

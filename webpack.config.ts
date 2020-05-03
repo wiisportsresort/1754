@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import * as MiniCSSExtractPlugin from 'mini-css-extract-plugin';
 import * as OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import * as path from 'path';
+import * as _ from 'lodash/fp';
 import * as TerserPlugin from 'terser-webpack-plugin';
 import * as webpack from 'webpack';
 import config1754 from './webpack.1754';
@@ -26,22 +27,22 @@ export const faviconTags = `
 export function commonPlugins() {
   const output: Array<any> = [
     new MiniCSSExtractPlugin({
-      filename: devMode ? '[name].css' : '[name].[hash].css',
-      chunkFilename: devMode ? '[name].css' : '[name].[hash].css',
+      filename: devMode ? '[name].css' : '[name].[contenthash].css',
+      chunkFilename: devMode ? '[name].css' : '[name].[contenthash].css',
+      esModule: true,
     }),
     new CleanWebpackPlugin({
-      dry: true,
       cleanStaleWebpackAssets: false,
     }),
   ];
- 
+
   if (devMode) {
   } else output.push(new OptimizeCSSAssetsPlugin());
 
   return output;
 }
 
-export function commonOptimization(): webpack.Options.Optimization {
+export function commonOptimization() {
   if (devMode) {
     return {
       minimize: false,
@@ -50,7 +51,7 @@ export function commonOptimization(): webpack.Options.Optimization {
   } else {
     return {
       minimize: true,
-      minimizer: <webpack.Plugin[]>[
+      minimizer: [
         new TerserPlugin({
           test: /\.(j|t)s(x?)$/i,
           sourceMap: true,
@@ -63,15 +64,29 @@ export function commonOptimization(): webpack.Options.Optimization {
 
 export const commonConfiguration = <webpack.Configuration>{
   mode: devMode ? 'development' : 'production',
+  output: {
+    filename: devMode ? '[name].js' : '[name].[contenthash].js',
+    chunkFilename: devMode ? '[name].js' : '[name].[contenthash].js',
+  },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
   },
-  stats: 'normal',
-  // {
-  //   children: false,
-  //   source: false,
-  //   colors: true,
-  // },
+  // stats: 'normal',
+  stats: devMode
+    ? {
+        all: false,
+        colors: true,
+        hash: true,
+        builtAt: true,
+        timings: true,
+        errors: true,
+        errorDetails: true,
+        logging: 'info',
+        warnings: true,
+        version: true,
+        context: path.resolve(__dirname, 'src')
+      }
+    : 'normal',
   devtool: devMode ? 'eval-source-map' : 'source-map',
   watchOptions: {
     ignored: ['../public/**', '../node_modules/**'],
@@ -79,8 +94,12 @@ export const commonConfiguration = <webpack.Configuration>{
   },
   optimization: {
     ...commonOptimization(),
+    runtimeChunk: 'single',
+    // moduleIds: 'named',
+    // namedChunks: true,
+    // chunkIds: 'named',
     splitChunks: {
-      chunks: 'async',
+      chunks: 'all',
       minSize: 30000,
       // minRemainingSize: 0,
       maxSize: 0,
@@ -88,28 +107,32 @@ export const commonConfiguration = <webpack.Configuration>{
       maxAsyncRequests: 6,
       maxInitialRequests: 4,
       automaticNameDelimiter: '~',
+      name: false,
       cacheGroups: {
         'vendor-react': {
           test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
           name: 'vendor-react',
           chunks: 'all',
-          priority: 5,
+          priority: 10,
+          enforce: true,
         },
         'vendor-jquery': {
           test: /[\\/]node_modules[\\/]jquery[\\/]/,
           name: 'vendor-jquery',
           chunks: 'all',
-          priority: 5,
+          priority: 10,
+          enforce: true,
         },
-        'vendor-other': {
+        vendor: {
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendor-other',
+          name: 'vendors',
           chunks: 'all',
-          priority: 1,
+          priority: 5,
+          enforce: true,
         },
         default: {
           minChunks: 2,
-          priority: -20,
+          priority: 0,
           reuseExistingChunk: true,
         },
       },
@@ -150,7 +173,7 @@ export const commonConfiguration = <webpack.Configuration>{
 
 export default function () {
   return <webpack.Configuration[]>[
-    { ...commonConfiguration, ...configMain() },
-    { ...commonConfiguration, ...config1754() },
+    _.merge(commonConfiguration, configMain()),
+    _.merge(commonConfiguration, config1754()),
   ];
 }
