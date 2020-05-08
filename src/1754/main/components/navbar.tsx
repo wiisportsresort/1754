@@ -1,10 +1,11 @@
-import * as React from 'react';
-import { Component } from 'react';
-import { colors, SemanticColors } from '../../common/hexdata';
-import { capitalize, EventPipe } from '../../common/util';
 import { Button } from '../../common/components/button';
-import { HTMLDivProps, HexContextClickData, GroupName } from '../../common/props';
-import { Game } from '..';
+import { Game } from "../../common/game";
+import { colors } from '../../common/hexdata';
+import { GroupName, HexContextClickData, HTMLDivProps, SemanticColors } from '../../common/types';
+import { capitalize } from '../../common/util';
+
+const React = await import('react');
+const { Component } = React;
 
 interface NavbarProps extends HTMLDivProps {
   game: Game;

@@ -1,11 +1,11 @@
-import * as $ from 'jquery';
-import * as React from 'react';
-import { Component } from 'react';
 import { ContextMenu, ContextMenuTrigger, hideMenu as hideContextMenu, MenuItem } from 'react-contextmenu';
-import { Game } from '..';
+import { Game } from "../../common/game";
 import { colors, hexLocations as loc } from '../../common/hexdata';
-import { GroupName, HexContextClickData, HTMLDivProps } from '../../common/props';
+import { GroupName, HexContextClickData, HTMLDivProps } from '../../common/types';
 import { capitalize } from '../../common/util';
+
+const React = await import('react');
+const { Component } = React;
 
 interface HexesProps extends HTMLDivProps {
   game: Game;

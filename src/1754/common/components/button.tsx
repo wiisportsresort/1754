@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { Component } from 'react';
-import { SemanticColors, colors, Colors } from '../hexdata';
-import { css } from 'emotion';
-import './button.scss';
-import { HTMLButtonProps, HTMLDivProps } from '../props';
 import classNames from 'classnames';
-import { EventPipe } from '../util';
+import { css } from 'emotion';
+import { colors } from '../hexdata';
+import { Colors, HTMLButtonProps, HTMLDivProps, SemanticColors } from '../types';
+import './button.scss';
+
+const React = await import('react');
+const { Component } = React;
+
 
 type ButtonType = 'flat' | 'raised';
 
@@ -71,7 +72,7 @@ export class Button extends Component<ButtonProps, ButtonState> {
       disabled = this.props.disabled!;
     }
 
-    const buttonColor = colors[color ?? ''] ?? '#ddd';
+    const buttonColor: string = colors[color ?? ''] ?? '#ddd';
     const colorWithOpacity = buttonColor + (disabled ? '33' : 'ff');
     return (
       <button

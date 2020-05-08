@@ -1,52 +1,36 @@
-import * as $ from 'jquery';
-import * as React from 'react';
-import { Component } from 'react';
-import * as ReactDOM from 'react-dom';
 import { RegisterRequest, RegisterResponse } from '../../../server/types';
 import { Button } from '../common/components/button';
-import { Header, Spacer } from '../common/components/header';
-import { SemanticColors } from '../common/hexdata';
-import { HTMLFormProps } from '../common/props';
+import { Header } from '../common/components/header';
+import { HTMLFormProps, SemanticColors } from '../common/types';
+import { startApp, unmountAll } from '../common/util';
+import './index.scss';
+
+const React = await import('react');
+const { Component } = React;
 
 declare global {
   interface Window {
-    init: () => any;
-    // allowSubmission: () => any;
-    // denySubmission: () => any;
     registerForm: RegisterForm | null;
   }
-  const grecaptcha: {
-    reset: () => void;
-    render: (
-      container: string | HTMLElement | Element,
-      options: {
-        sitekey?: string;
-        theme?: 'dark' | 'light';
-        size?: 'compact' | 'normal';
-        tabindex?: number;
-        callback?: () => any;
-        'expired-callback'?: () => any;
-        'error-callback'?: () => any;
-      }
-    ) => void;
-  };
 }
 
 class RegisterForm extends Component<HTMLFormProps, {}> {
   registerButtonRef: React.RefObject<Button>;
-  
-  constructor(props) {
-    super(props);
 
+  constructor(props: Readonly<HTMLFormProps>) {
+    super(props);
     this.registerButtonRef = React.createRef<Button>();
   }
 
-  allowSubmission() {
+  /** Enable the submission button. */
+  enable() {
     this.registerButtonRef.current?.modify({
       disabled: false,
     });
   }
-  denySubmission() {
+
+  /** Disable the submission button. */
+  disable() {
     this.registerButtonRef.current?.modify({
       disabled: true,
     });
@@ -60,16 +44,20 @@ class RegisterForm extends Component<HTMLFormProps, {}> {
             <h2>Register</h2>
             <div id="spacer"></div>
           </div>
+          <div className="label-wrapper">
+            <label htmlFor="form-id" id="form-id-label"></label>
+          </div>
+          <input id="form-id" placeholder="Username" />
 
-          <label htmlFor="form-id" id="form-id-label">
-            <input id="form-id" placeholder="Username" />
-          </label>
-          <label htmlFor="form-secret" id="form-secret-label">
-            <input type="password" id="form-secret" placeholder="Password" />
-          </label>
-          <label htmlFor="form-secret-check" id="form-secret-check-label">
-            <input type="password" id="form-secret-check" placeholder="Confirm Password" />
-          </label>
+          <div className="label-wrapper">
+            <label htmlFor="form-secret" id="form-secret-label"></label>
+          </div>
+          <input type="password" id="form-secret" placeholder="Password" />
+
+          <div className="label-wrapper">
+            <label htmlFor="form-secret-check" id="form-secret-check-label"></label>
+          </div>
+          <input type="password" id="form-secret-check" placeholder="Confirm Password" />
 
           <div id="recaptcha"></div>
 
@@ -78,100 +66,157 @@ class RegisterForm extends Component<HTMLFormProps, {}> {
             disabled
             color={SemanticColors.france}
             className="button-register"
-            stateful
+            stateful={true}
           >
             Login
           </Button>
 
-          <div className="form-response"></div>
+          <div id="form-response"></div>
         </div>
       </form>
     );
   }
 }
+function PasswordError() {
+  return <span className="error">Passwords do not match.</span>;
+}
 
-function renderForm() {
-  $('.header-button--back').on('click', () => (window.location.href = '../'));
+const animateIn = {
+    // height: '1rem',
+    opacity: '1',
+  },
+  animateOut = {
+    // height: '0rem',
+    opacity: '0',
+  };
 
-  ReactDOM.render(
+function App() {
+  return (
     <>
       <Header>
         <Header.Title>1754</Header.Title>
-        <Spacer />
-        <Button className="header-button-back">Back</Button>
+        <Header.Spacer />
+        <Button id="header-button-back" onClick={() => (location.href = '../')}>
+          Back
+        </Button>
       </Header>
-
-      <RegisterForm
-        className="register-form"
-        ref={registerForm => (window.registerForm = registerForm)}
-      />
-    </>,
-    document.querySelector('#app')
+      <main>
+        <RegisterForm
+          className="register-form"
+          ref={registerForm => (window.registerForm = registerForm)}
+        />
+      </main>
+    </>
   );
-
-  const response = document.querySelector('.form-response');
-
-  // typescript angery if this is not here
-  if (response == null) throw new Error('oh noes');
-
-  (function attatchFormListeners() {
-    $('.button-register').on('click', function (event) {
-      event.preventDefault();
-      window.registerForm?.denySubmission()
-
-      ReactDOM.unmountComponentAtNode(response);
-      ReactDOM.render(
-        <>
-          <div className="circular-progress-indicator"></div>Waiting for response...
-        </>,
-        response
-      );
-
-      const id = $('#form-id').val() as string;
-      const secret = $('#form-secret').val() as string;
-      const data: RegisterRequest = { id, secret };
-
-      $.ajax({
-        url: 'api/auth/register',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-      })
-        .done(function (data: RegisterResponse) {
-          console.log('Register request done.');
-          console.log(data);
-          if (!data.success) {
-            ReactDOM.render(<div className="error">Error: {data.reason}</div>, response);
-          } else {
-            ReactDOM.render(<div className="success">Success! Redirecting...</div>, response);
-            setTimeout(() => (location.href = '/'), 2000);
-          }
-          grecaptcha.reset();
-          window.registerForm?.denySubmission()
-        })
-        .fail(function (data) {
-          console.log('Register request failed.');
-          console.log(data);
-          grecaptcha.reset();
-          window.registerForm?.denySubmission()
-        });
-    });
-  })();
 }
 
-window.init = () => {
-  renderForm();
+async function setupForm() {
+  const $ = await import('jquery');
+  const ReactDOM = await import('react-dom');
+
+  const responseEl = document.querySelector('#form-response'),
+    idLabelEl = document.querySelector('#form-id-label'),
+    secretLabelEl = document.querySelector('#form-secret-label'),
+    secretCheckLabelEl = document.querySelector('#form-secret-check-label');
+
+  const $id = $('#form-id'),
+    $idLabel = $('#form-id-label'),
+    $secret = $('#form-secret'),
+    $secretLabel = $('#form-secret-label'),
+    $secretCheck = $('#form-secret-check'),
+    $secretCheckLabel = $('#form-secret-check-label');
+
+  function checkSecretMatch() {
+    const secretVal = $secret.val() as string;
+    const secretCheckVal = $secretCheck.val() as string;
+
+    if (secretVal !== secretCheckVal) {
+      $secretLabel.css(animateIn);
+      ReactDOM.render(<PasswordError />, secretLabelEl);
+      $secretCheckLabel.css(animateIn);
+      ReactDOM.render(<PasswordError />, secretCheckLabelEl);
+      window.registerForm?.disable();
+    } else {
+      $secretLabel.css(animateOut);
+      $secretCheckLabel.css(animateOut);
+      setTimeout(() => unmountAll([secretLabelEl, secretCheckLabelEl]), 250);
+      window.registerForm?.enable();
+    }
+  }
+
+  $secret.on('change', checkSecretMatch);
+  $secretCheck.on('change', checkSecretMatch);
+
+  $('.button-register').on('click', function (event) {
+    event.preventDefault();
+    window.registerForm?.disable();
+
+    const idVal = $id.val() as string;
+    const secretVal = $secret.val() as string;
+    const secretCheckVal = $secretCheck.val() as string;
+
+    setTimeout(() => unmountAll([idLabelEl, secretLabelEl, secretCheckLabelEl, responseEl]), 250);
+
+    if (secretVal !== secretCheckVal) {
+      $secretLabel.css(animateIn);
+      ReactDOM.render(<PasswordError />, secretLabelEl);
+      $secretCheckLabel.css(animateIn);
+      ReactDOM.render(<PasswordError />, secretCheckLabelEl);
+      window.registerForm?.enable();
+      return;
+    }
+
+    ReactDOM.render(
+      <>
+        <div className="circular-progress-indicator"></div>Waiting for response...
+      </>,
+      responseEl
+    );
+
+    const data: RegisterRequest = {
+      id: idVal,
+      secret: secretVal,
+      recaptchaToken: grecaptcha.getResponse(),
+    };
+
+    $.ajax({
+      url: 'api/auth/register',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(data),
+    })
+      .done(function (data: RegisterResponse) {
+        console.log('Register request done.');
+        console.log(data);
+        if (!data.success) {
+          if (data.code === 'ERR-ALREADY-REGISTERED')
+            ReactDOM.render(<span className="error">Username is taken.</span>, idLabelEl);
+          else ReactDOM.render(<div className="error">Error: {data.reason}</div>, responseEl);
+        } else {
+          ReactDOM.render(<div className="success">Success! Redirecting...</div>, responseEl);
+          setTimeout(() => (location.href = '/'), 2000);
+        }
+        grecaptcha.reset();
+        window.registerForm?.disable();
+      })
+      .fail(function (data) {
+        console.log('Register request failed.');
+        console.log(data);
+        grecaptcha.reset();
+        window.registerForm?.disable();
+      });
+  });
+}
+
+startApp(<App />, () => {
+  setupForm();
 
   const recaptchaEl = document.querySelector('#recaptcha');
   if (recaptchaEl != null && window.registerForm != null)
     grecaptcha.render(recaptchaEl, {
       sitekey: process.env.GRECAPTCHA_SITE_KEY,
       theme: 'dark',
-      'expired-callback': () => window.registerForm?.denySubmission(),
-      callback: () => window.registerForm?.allowSubmission(),
+      'expired-callback': () => window.registerForm?.disable(),
+      callback: () => window.registerForm?.enable(),
     });
-
-  $('.header-button-back').on('click', () => (location.href = '/'));
-};
-
-window.addEventListener('load', () => (document.body.style.visibility = 'visible'));
+});

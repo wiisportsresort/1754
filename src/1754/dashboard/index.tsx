@@ -1,12 +1,13 @@
-import * as $ from 'jquery';
-import * as React from 'react';
-import { Component } from 'react';
-import * as ReactDOM from 'react-dom';
 import { HTTPMethod } from '../../../server/types';
 import { Button } from '../common/components/button';
-import { Header, Spacer } from '../common/components/header';
-import { HTMLDivProps } from '../common/props';
-import { Colors } from '../common/hexdata';
+import { Header } from '../common/components/header';
+import { Colors, HTMLDivProps } from '../common/types';
+import { startApp } from '../common/util';
+import './index.scss';
+
+const $ = await import('jquery');
+const React = await import('react');
+const { Component } = React;
 
 class Dashboard extends Component<HTMLDivProps> {
   buttonRef: React.RefObject<Button>;
@@ -34,21 +35,23 @@ class Dashboard extends Component<HTMLDivProps> {
   render() {
     return (
       <>
-        <Button stateful ref={this.buttonRef}>Button!</Button>
+        <Button stateful ref={this.buttonRef}>
+          Button!
+        </Button>
       </>
     );
   }
 }
 
-function renderDashboard() {
-  $('.header-button-back').on('click', () => (location.href = '../'));
-
-  ReactDOM.render(
+function App() {
+  return (
     <>
       <Header>
         <Header.Title>1754</Header.Title>
-        <Spacer />
-        <Button className="header-button-back">Back</Button>
+        <Header.Spacer />
+        <Button className="header-button-back" onClick={() => (location.href = '../')}>
+          Back
+        </Button>
       </Header>
 
       <div id="dashboard">
@@ -65,20 +68,19 @@ function renderDashboard() {
           <div id="dashboard-controls-games"></div>
         </div>
       </div>
-    </>,
-    document.querySelector('#app')
+    </>
   );
-
-  (function attatchFormListeners() {
-    function someHandler() {
-      const data = {};
-
-      $jsonRequest('somePath', 'POST', data)
-        .done(res => {})
-        .fail(res => {});
-    }
-  })();
 }
+
+// (function attatchFormListeners() {
+//   function someHandler() {
+//     const data = {};
+
+//     $jsonRequest('somePath', 'POST', data)
+//       .done(res => {})
+//       .fail(res => {});
+//   }
+// })();
 
 const $jsonRequest = (
   url: string,
@@ -95,8 +97,4 @@ const $jsonRequest = (
   });
 };
 
-function init() {
-  renderDashboard();
-}
-window.addEventListener('DOMContentLoaded', init);
-window.addEventListener('load', () => (document.body.style.visibility = 'visible'));
+startApp(<App />);
