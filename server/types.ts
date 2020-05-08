@@ -13,11 +13,13 @@ export interface LoginResponse {
 export interface RegisterRequest {
   id: string;
   secret: string;
+  recaptchaToken: string;
 }
 
 export interface RegisterResponse {
   success: boolean;
   reason?: string;
+  code: 'ERR-ALREADY-REGISTERED' | 'ERR-TIMED-OUT' | 'SUCCESS';
 }
 
 export interface JWTPayload {

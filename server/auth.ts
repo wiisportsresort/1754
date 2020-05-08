@@ -1,14 +1,23 @@
 import * as ch from 'chalk';
 import * as crypto from 'crypto';
-import { EventEmitter } from 'events';
 import * as express from 'express';
 import * as fse from 'fs-extra';
 import * as inquirer from 'inquirer';
 import * as jwt from 'jsonwebtoken';
 import * as path from 'path';
 import { promisify } from 'util';
-import { JWTPayload, Keystore, LoginRequest, RegisterResponse, LoginResponse } from './types';
+import axios from 'axios';
+import {
+  JWTPayload,
+  Keystore,
+  LoginRequest,
+  RegisterResponse,
+  LoginResponse,
+  Gamestore,
+  RegisterRequest,
+} from './types';
 import { mapToObject, objectToMap, resolvePath } from './common';
+import { Store } from './store';
 
 const SALT_LENGTH = 64,
   KEY_LENGTH = 64,
@@ -63,14 +72,14 @@ export function handleLogin({ users, games }: HandlerParams) {
             res.json(<LoginResponse>{
               success: false,
               type: 'teacher',
-              reason: 'Keystore does not exist for user.',
+              reason: 'Invalid username or password.',
             });
             return;
           }
           if (await verifyPassword(secret, keystore)) {
             // correct username and password; generate jwt now
             const payload: JWTPayload = { id, type };
-            const token = jwt.sign({ id }, JWT_SECRET, {
+            const token = jwt.sign(payload, JWT_SECRET, {
               algorithm: 'HS256',
               expiresIn: JWT_EXPIRY_SECONDS,
             });
@@ -111,65 +120,88 @@ export function handleLogin({ users, games }: HandlerParams) {
   */
 }
 
-export function handleRefresh() {
+export function handleRefresh({ users }: HandlerParams) {
   return async (req: express.Request, res: express.Response) => {};
 }
 
-export function handleLogout() {
+export function handleLogout({ users }: HandlerParams) {
   return async (req: express.Request, res: express.Response) => {};
 }
-export function handleRegister() {
+
+export function handleRegister({ users }: HandlerParams) {
   return async (req: express.Request, res: express.Response) => {
-    const { id, secret } = req.body;
+    const { id, secret, recaptchaToken }: RegisterRequest = req.body;
+    try {
+      const recaptchaResponse = await axios.post(
+        'https://www.google.com/recaptcha/api/siteverify',
+        {
+          secret: process.env.GRECAPTCHA_SECRET,
+          response: recaptchaToken,
+          remoteIp: req.socket.remoteAddress,
+        }
+      );
+      const data = JSON.parse(recaptchaResponse.data);
+      console.error("Recaptcha verify done.");
+      console.log(data);
+    } catch (err) {
+      console.error("Recaptcha verify error.");
+      console.error(err);
+    }
+
     if (users.has(id)) {
       res.json(<RegisterResponse>{
         success: false,
         reason: 'User is already registered.',
+        code: 'ERR-ALREADY-REGISTERED',
       });
       return;
     }
 
     // wait for either the user to respond to the prompt or 60s to elapse
-    const result: { allow: boolean; timedOut?: boolean } = await new Promise(
-      (resolve, reject) => {
-        const prompt = inquirer.prompt({
-          type: 'confirm',
-          message: ch`{reset.yellow.bold ${req.ip} wants to register the account {reset.blue ${id}}, allow?}`,
-          name: 'allow',
-          prefix: '⚠️ ',
-          default: false,
-        });
+    const result: { allow: boolean; timedOut?: boolean } = await new Promise((resolve, reject) => {
+      const prompt = inquirer.prompt({
+        type: 'confirm',
+        message: ch`{reset.yellow.bold ${req.ip} wants to register the account {reset.blue ${id}}, allow?}`,
+        name: 'allow',
+        prefix: '⚠️ ',
+        default: false,
+      });
 
-        let closePrompt = () => {
-          // @ts-ignore | i don't know why this is protected in @types/inquirer
-          prompt.ui.close();
-          console.log('');
-          console.log(ch`{reset.red Timed out after 60s.}`);
-          resolve({ allow: false, timedOut: true });
-        };
-        const timeout = setTimeout(closePrompt, 60000);
+      let closePrompt = () => {
+        // @ts-ignore // i don't know why this is protected in @types/inquirer
+        prompt.ui.close();
+        console.log('');
+        console.log(ch`{reset.red Timed out after 60s.}`);
+        resolve({ allow: false, timedOut: true });
+      };
+      const timeout = setTimeout(closePrompt, 60000);
 
-        prompt.then(result => {
-          result = result as { allow: boolean };
-          clearTimeout(timeout);
-          // @ts-ignore
-          resolve({ allow: result.allow });
-          // closePrompt = () => {};
-        });
-      }
-    );
+      prompt.then(result => {
+        result = result as { allow: boolean };
+        clearTimeout(timeout);
+        // @ts-ignore
+        resolve({ allow: result.allow });
+        // closePrompt = () => {};
+      });
+    });
 
     if (result.allow) {
       console.log(ch`{green Register request allowed.}`);
 
-      res.json(<RegisterResponse>{ success: true });
-      return users.set(id, await generateKey(secret));
+      res.json(<RegisterResponse>{
+        success: true,
+        code: 'SUCCESS',
+      });
+
+      users.set(id, await generateKey(secret));
+      return;
     } else if (result.timedOut) {
       console.log(ch`{red Register request denied.}`);
 
       res.json(<RegisterResponse>{
         success: false,
         reason: 'Server timed out.',
+        code: 'ERR-TIMED-OUT',
       });
     } else {
       console.log(ch`{red Register request denied.}`);
