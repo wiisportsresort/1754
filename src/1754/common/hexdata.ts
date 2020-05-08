@@ -1,4 +1,4 @@
-import { GroupName } from './props';
+import { GroupName } from './types';
 
 /** X/Y from top/left (in px) for each hex in one-based index format. */
 export const hexLocations: Array<[number, number]> = [
@@ -47,26 +47,6 @@ export const colors: { [group in GroupName]: string } = {
   miami: '#d075c3',
   ojibwe: '#fedc30',
 };
-
-export enum SemanticColors {
-  france = 'france',
-  britain = 'britain',
-  mohawk = 'mohawk',
-  cherokee = 'cherokee',
-  shawnee = 'shawnee',
-  miami = 'miami',
-  ojibwe = 'ojibwe',
-}
-
-export enum Colors {
-  blue = 'france',
-  red = 'britain',
-  green = 'mohawk',
-  purple = 'cherokee',
-  orange = 'shawnee',
-  pink = 'miami',
-  yellow = 'ojibwe',
-}
 
 export const defaultOwnersToHexes = {
   france: [1, 4, 13, 14, 15, 16, 25],
