@@ -22,6 +22,8 @@ if (args.length === 0) {
 }
 
 if (!args[2]) args[2] = '';
+const actions = args[0].split(',');
+const options = args[2].split(',');
 
 const pkgMgr = process.env.npm_config_user_agent.split('/')[0];
 const startCmd = pkgMgr === 'yarn' ? 'yarn run' : pkgMgr + ' start';
@@ -69,39 +71,49 @@ NOTE: the start script (run by "${startCmd}") is only for redirecting
   process.exit(0);
 }
 
-const enableServe = args[0].includes('serve'),
-  enableBuild = args[0].includes('build'),
+const enableServe = actions.some(v => v === 'serve'),
+  enableBuild = actions.some(v => v === 'build'),
+  enableDev = args[1] === 'dev',
   enableDebug = args[1] === 'debug',
-  enableDev = enableDebug || args[1] === 'dev',
   enableProd = args[1] === 'prod',
-  showTimestamps = args[2].includes('timestamps');
+  showTimestamps = options.some(v => v === 'timestamps');
 
 if (!enableBuild && !enableServe) {
   console.error(
-    ch`{reset.yellow.dim main} {reset.red.bold Error: action argument is invalid (must include at least one of "build" | "serve"). Run "pnpm run help" for usage.}`
+    ch`{reset.yellow.dim main} {reset.red.bold Error: action argument is invalid (must include at least one of "build" and "serve"). Run "pnpm run help" for usage.}`
   );
   process.exit(1);
 }
 
 if (!enableDev && !enableProd) {
   console.error(
-    ch`{reset.yellow.dim main} {reset.red.bold Error: environment argument is invalid (must be "debug" | "dev" | "prod"). Run "pnpm run help" for usage.}`
+    ch`{reset.yellow.dim main} {reset.red.bold Error: environment argument is invalid (must be "dev" or "prod"). Run "${pkgMgr} run help" for usage.}`
   );
   process.exit(1);
 }
 
-console.log(ch`{reset.yellow.dim main} {reset.blue Starting ${args[0]} in ${args[1]} mode...}`);
+console.log(ch`{reset.yellow.dim main} {reset Starting [${actions.join(', ')}] in ${args[1]} mode with options [${options.join(', ')}]}`);
 
 serve.command = serve.command
-  .replace('$ENV', `NODE_ENV=${enableDev ? 'development' : 'production'}`)
+  .replace(
+    '$ENV',
+    'cross-env' +
+      ` NODE_ENV=${enableDev ? 'development' : 'production'}` +
+      ` TS_NODE_PROJECT="tsconfig-cjs.json"`
+  )
   .replace('$CMD', enableDev ? 'nodemon' : 'ts-node')
   .replace('$FLAGS', enableDebug ? '--inspect' : '')
   .replace('$ARGS', enableDev ? '' : './server/index.ts');
 
 build.command = build.command
-  .replace('$ENV', `NODE_ENV=${enableDev ? 'development' : 'production'}`)
+  .replace(
+    '$ENV',
+    'cross-env' +
+      ` NODE_ENV=${enableDev ? 'development' : 'production'}` +
+      ` TS_NODE_PROJECT="tsconfig-cjs.json"`
+  )
   .replace('$CMD', 'webpack')
-  .replace('$FLAGS', enableServe ? '--watch' : '')
+  .replace('$FLAGS', enableDev ? '--watch' : '')
   .replace('$ARGS', '');
 
 process.stdin.resume();
@@ -126,6 +138,7 @@ conc(run, {
   prefix: showTimestamps ? '[{time}] {name}' : '{name}',
   inputStream: process.stdin,
   timestampFormat: 'MM/dd HH:mm:ss',
+  successCondition: 'first',
 })
   .then(() => process.exit(0))
   .catch(err => {

@@ -116,5 +116,5 @@ frontend/dist
 .pnp.*
 
 # Data for game
-data/*
+data
 
