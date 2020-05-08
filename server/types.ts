@@ -33,6 +33,23 @@ export interface Keystore {
   iterations: number;
 }
 
+export interface Gamestore {
+  state: {
+    france: number[];
+    britain: number[];
+    cherokee: number[];
+    shawnee: number[];
+    miami: number[];
+    ojibwe: number[];
+    mohawk: number[];
+  }
+  transfers: GameHexTransfer[];
+}
+
+export interface GameHexTransfer {
+
+}
+
 // export enum ConnectionType {
 //   teacher,
 //   student,

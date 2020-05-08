@@ -7,9 +7,21 @@ import * as http from 'http';
 import * as https from 'https';
 import { handleLogin, handleLogout, handleRefresh, handleRegister } from './auth';
 import { resolvePath } from './common';
+import { Store } from './store';
+import { Keystore, Gamestore } from './types';
 
 const file = (file: string) => (_req: express.Request, res: express.Response) =>
   res.sendFile(resolvePath(file));
+
+const users = new Store<Keystore>({
+  path: resolvePath('data/users.json'),
+  writeOnSet: true,
+});
+
+const games = new Store<Gamestore>({
+  path: resolvePath('data/games.json'),
+  writeOnSet: true,
+});
 
 export function createRoutes(app: express.Express) {
   // make sure ip reading is allowed
@@ -28,28 +40,33 @@ export function createRoutes(app: express.Express) {
 
   // routes
   // main
-  app.get('/', file('dist/views/home.html'))
-  app.get('/parents', file('dist/views/parents.html'))
-  app.get('/homework', file('dist/views/homework.html'))
-  app.get('/writing-guide', file('dist/views/writing-guide.html'))
+  app
+    .get('/', file('dist/views/home.html'))
+    .get('/parents', file('dist/views/parents.html'))
+    .get('/homework', file('dist/views/homework.html'))
+    .get('/writing-guide', file('dist/views/writing-guide.html'));
   for (let i = 0; i < 12; i++) app.get(`/unit${i + 1}`, file(`dist/views/unit${i + 1}`));
 
-  // 1754
-  app.get('/1754', file('dist/1754/views/home.html'));
-  app.get('/1754/login', file('dist/1754/views/login.html'));
-  app.get('/1754/register', file('dist/1754/views/register.html'));
-  app.get('/1754/dashboard', file('dist/1754/views/dashboard.html'));
+  app
+    // 1754
+    .get('/1754', file('dist/1754/views/home.html'))
+    .get('/1754/login', file('dist/1754/views/login.html'))
+    .get('/1754/register', file('dist/1754/views/register.html'))
+    .get('/1754/dashboard', file('dist/1754/views/dashboard.html'))
+    .get('/1754/async-test', file('dist/1754/views/async-test.html'))
 
-  // API
-  app.post('/1754/api/auth/login', handleLogin());
-  app.post('/1754/api/auth/refresh', handleRefresh());
-  app.post('/1754/api/auth/logout', handleLogout());
-  app.post('/1754/api/auth/register', handleRegister());
+    // api
+    // auth
+    .post('/1754/api/auth/login', handleLogin({ users, games }))
+    .post('/1754/api/auth/refresh', handleRefresh({ users, games }))
+    .post('/1754/api/auth/logout', handleLogout({ users, games }))
+    .post('/1754/api/auth/register', handleRegister({ users, games }))
 
-  app.post('/1754/api/games/new', (req, res) => {});
-  app.post('/1754/api/games/delete', (req, res) => {});
-  app.get('/1754/api/games/verify/:code', (req, res) => {});
-  app.get('/1754/api/games/details/:code', (req, res) => {});
+    // games
+    .post('/1754/api/games/new', (req, res) => {})
+    .post('/1754/api/games/delete', (req, res) => {})
+    .get('/1754/api/games/verify/:code', (req, res) => {})
+    .get('/1754/api/games/details/:code', (req, res) => {});
 
   return app;
 }

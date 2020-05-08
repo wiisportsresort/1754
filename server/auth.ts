@@ -39,84 +39,19 @@ export async function verifyPassword(password: crypto.BinaryLike, store: Keystor
   return key.equals(store.key);
 }
 
-export interface UserStoreOptions {
-  /** Path to JSON file to store login data in. */
-  path?: string;
-  /** Whether to write to disk every time a login is set. */
+export interface StoreOptions {
+  /** Path to JSON file to store data in. */
+  path: string;
+  /** Whether to write to disk every time `store.set()` is called. */
   writeOnSet?: boolean;
 }
 
-export class UserStore {
-  public events: EventEmitter;
-  private map: Map<string, Keystore>;
-  static defaultPath = path.resolve(__dirname, '../data/users.json');
-  public path: string;
-
-  constructor(options: UserStoreOptions = {}) {
-    this.events = new EventEmitter();
-    this.map = this.readFile();
-    this.path = options.path ?? UserStore.defaultPath;
-    if (options.writeOnSet) {
-      this.events.addListener('set', () => {
-        this.writeFile();
-      });
-    }
-  }
-  /** Read the contents of `userStore.path`
-   * and interpret as `Map`; if it throws an error,
-   * will return an empty map instead. */
-  readFile() {
-    try {
-      const raw = (fse.readFileSync(this.path) as unknown) as string;
-      const data: object = JSON.parse(raw);
-      return objectToMap(data) as Map<string, Keystore>;
-    } catch (err) {
-      return new Map<string, Keystore>();
-    }
-  }
-  /** Delete all users from the map.
-   * Emits `clear` once writing is complete. */
-  async clear() {
-    this.map.clear();
-    await this.writeFile();
-    this.events.emit('clear');
-  }
-  /** Write the current contents to disk.
-   * Emits `write` after complete. */
-  async writeFile() {
-    await fse.writeFile(UserStore.defaultPath, JSON.stringify(mapToObject(this.map)));
-    this.events.emit('write');
-  }
-  /** Set the keystore for a given user.
-   * Emits `set` after setting is complete. */
-  set(user: string, keystore: Keystore) {
-    this.map.set(user, keystore);
-    this.events.emit('set');
-  }
-  /** Retrieve a keystore for a given user.
-   * Emits `get`. */
-  get(user: string) {
-    this.events.emit('get');
-    return this.map.get(user);
-  }
-  /** Returns an iterable of duples in the format [username, keystore]. */
-  get entries() {
-    return this.map.entries;
-  }
-  /** Returns an array of all usernames in the map. */
-  get users() {
-    return this.map.keys;
-  }
-  /** Check if user exists in the map. */
-  has(user: string) {
-    return this.map.has(user);
-  }
+interface HandlerParams {
+  users: Store<Keystore>;
+  games: Store<Gamestore>;
 }
 
-const users = new UserStore({ writeOnSet: true });
-const refreshTokens = new Map();
-
-export function handleLogin() {
+export function handleLogin({ users, games }: HandlerParams) {
   return async (req: express.Request, res: express.Response) => {
     try {
       const { id, secret, type }: LoginRequest = req.body;
