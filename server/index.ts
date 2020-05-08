@@ -20,10 +20,11 @@ if (port == undefined) {
 server.on('error', err => {
   if (err.code === 'EADDRINUSE') {
     console.error(
-      ch`{red Error: port ${port} is being used by another process. Kill that process and try again.}
-{reset.blue Hint: type {bold ss -tlpn | grep "*:${port}"}}
-`
-    );
+      ch`
+Error: port {bold ${port}} is being used by another process. Kill that process and try again.
+
+{dim Hint: type {reset kill $(lsof -t -i :${port} -s TCP:LISTEN)} or {reset fuser -k ${port}/tcp} to kill the process}
+`);
     process.exit(1);
   }
 });
