@@ -29,10 +29,11 @@ export function commonPlugins() {
     new MiniCSSExtractPlugin({
       filename: devMode ? '[name].css' : '[name].[contenthash].css',
       chunkFilename: devMode ? '[name].css' : '[name].[contenthash].css',
-      esModule: true,
+      // esModule: true,
     }),
     new CleanWebpackPlugin({
       cleanStaleWebpackAssets: false,
+      cleanAfterEveryBuildPatterns: ['!*/']
     }),
   ];
 
@@ -51,7 +52,7 @@ export function commonOptimization() {
   } else {
     return {
       minimize: true,
-      minimizer: [
+      minimizer: <Array<any>>[
         new TerserPlugin({
           test: /\.(j|t)s(x?)$/i,
           sourceMap: true,
@@ -75,6 +76,7 @@ export const commonConfiguration = <webpack.Configuration>{
   stats: devMode
     ? {
         all: false,
+        assets: true,
         colors: true,
         hash: true,
         builtAt: true,
@@ -84,14 +86,20 @@ export const commonConfiguration = <webpack.Configuration>{
         logging: 'info',
         warnings: true,
         version: true,
-        context: path.resolve(__dirname, 'src')
+        context: path.resolve(__dirname, 'src'),
       }
     : 'normal',
-  devtool: devMode ? 'eval-source-map' : 'source-map',
+  experiments: {
+    topLevelAwait: true,
+    importAsync: true,
+    importAwait: true,
+  },
+  devtool: devMode ? 'inline-source-map' : 'source-map',
   watchOptions: {
     ignored: ['../public/**', '../node_modules/**'],
     aggregateTimeout: 0,
   },
+
   optimization: {
     ...commonOptimization(),
     runtimeChunk: 'single',
@@ -99,15 +107,15 @@ export const commonConfiguration = <webpack.Configuration>{
     // namedChunks: true,
     // chunkIds: 'named',
     splitChunks: {
-      chunks: 'all',
-      minSize: 30000,
+      chunks: 'async',
+      // minSize: 30000,
       // minRemainingSize: 0,
-      maxSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 6,
-      maxInitialRequests: 4,
-      automaticNameDelimiter: '~',
-      name: false,
+      // maxSize: 0,
+      // minChunks: 1,
+      // maxAsyncRequests: 6,
+      // maxInitialRequests: 4,
+      // automaticNameDelimiter: '~',
+      // name: false,
       cacheGroups: {
         'vendor-react': {
           test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
@@ -155,7 +163,12 @@ export const commonConfiguration = <webpack.Configuration>{
               plugins: [autoprefixer()],
             },
           },
-          'sass-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
         ],
       },
       {
@@ -165,7 +178,7 @@ export const commonConfiguration = <webpack.Configuration>{
       },
       {
         test: /\.ts(x?)/,
-        loader: 'ts-loader',
+        use: ['babel-loader', 'ts-loader'],
       },
     ],
   },

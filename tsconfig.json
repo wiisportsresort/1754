@@ -2,10 +2,10 @@
   "exclude": ["dist", "public", "data"],
   "compilerOptions": {
     "pretty": true,
-    "target": "es5",
-    "module": "commonjs",
+    "target": "esnext",
+    "module": "esnext",
     "lib": ["ES2015", "DOM", "ES2018.AsyncIterable", "ESNext"],
-    "jsx": "react",
+    "jsx": "preserve",
     "strict": true,
     "sourceMap": true,
     "noImplicitAny": false,
